@@ -3,8 +3,21 @@
 	<name>[RF] Rational Romance [1.1] BETA</name>
 	<author>Rainbeau Flambe / Zombie_Striker</author>
 	<url>https://ludeon.com/forums/index.php?topic=46165</url>
-	<targetVersion>1.1</targetVersion>
-	<description>(Last update: 12/05/2018)
+  <supportedVersions>
+    <li>1.1</li>
+  </supportedVersions>
+  <packageId>rainbeau.rational.romance</packageId>
+  <modDependenciesByVersion>
+    <v1.1>
+      <li>
+        <packageId>brrainz.harmony</packageId>
+        <displayName>Harmony</displayName>
+        <steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+        <downloadUrl>https://github.com/pardeike/HarmonyRimWorld/releases/latest</downloadUrl>
+      </li>
+    </v1.1>
+  </modDependenciesByVersion>
+  <description>(Last update: 3/1/2020)
 
 "Rational Romance" overhauls RimWorld's romance system, fixing some problems and adding some new options. Think of it as a "spiritual successor" to SeveralPuffins' popular but sadly abandoned a17 mod, "Romance Diversified."
 
