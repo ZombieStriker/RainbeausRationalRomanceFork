@@ -2,6 +2,11 @@
   Changelog for "Rainbeau's Rational Romance"
 ---------------------------------------------------------------------------------
 
+- 3/2/2020
+	- Zombie_Striker will not update the code.
+	- V1.1 support.
+	- Polyamorous trait's default change has been set to 15.
+
 - 12/05/2018
 	- Made some more minor tweaks to the date functionality.
 	- Rewrote XML patches to improve load efficiency slightly.

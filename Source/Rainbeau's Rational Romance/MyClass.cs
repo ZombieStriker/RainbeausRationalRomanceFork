@@ -29,7 +29,7 @@ namespace RationalRomance_Code {
 		public float bisexualChance = 50f;
 		public float gayChance = 20f;
 		public float straightChance = 20f;
-		public float polyChance = 0f;
+		public float polyChance = 15f;
 		public float alienLoveChance = 33f;
 		public float dateRate = 100f;
 		public float hookupRate = 100f;

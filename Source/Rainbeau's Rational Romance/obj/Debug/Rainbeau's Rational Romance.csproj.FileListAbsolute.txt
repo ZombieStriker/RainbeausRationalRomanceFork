@@ -1,3 +1,7 @@
 C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\RF - Rational Romance\Assemblies\Rainbeau's Rational Romance.dll
 C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\RF - Rational Romance\Source\Rainbeau's Rational Romance\obj\Debug\Rainbeau's Rational Romance.csprojResolveAssemblyReference.cache
 C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\RF - Rational Romance\Source\Rainbeau's Rational Romance\obj\Debug\Rainbeau's Rational Romance.dll
+F:\GitHub\Rimworld\RainbeausRationalRomanceFork\Assemblies\Rainbeau's Rational Romance.dll
+F:\GitHub\Rimworld\RainbeausRationalRomanceFork\Source\Rainbeau's Rational Romance\obj\Debug\Rainbeau's Rational Romance.csproj.CopyComplete
+F:\GitHub\Rimworld\RainbeausRationalRomanceFork\Source\Rainbeau's Rational Romance\obj\Debug\Rainbeau's Rational Romance.dll
+F:\GitHub\Rimworld\RainbeausRationalRomanceFork\Source\Rainbeau's Rational Romance\obj\Debug\Rainbeau's Rational Romance.csprojAssemblyReference.cache

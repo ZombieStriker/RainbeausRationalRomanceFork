@@ -11,7 +11,7 @@
 	<RRR.AsexualChance>Chance of a Pawn Being Asexual (Uninterested in Any Romantic Entanglements):</RRR.AsexualChance>
 
 	<RRR.PolyamoryChance>Chance of a Pawn Being Polyamorous:</RRR.PolyamoryChance>
-	<RRR.PolyamoryChanceTip>This slider determines how likely pawns are to have the Polyamorous trait. (Polyamorous, like the orientation traits, is an "extra" trait, and won't actually interfere with normal trait assignment. It's set to 0% by default, as the polyamory system isn't fully tested, and even if it all works as intended, it may introduce unexpected complications to colony management.</RRR.PolyamoryChanceTip>
+	<RRR.PolyamoryChanceTip>This slider determines how likely pawns are to have the Polyamorous trait. (Polyamorous, like the orientation traits, is an "extra" trait, and won't actually interfere with normal trait assignment. It's set to 15% by default, though it may introduce unexpected complications to colony management.</RRR.PolyamoryChanceTip>
 	
 	<RRR.AlienLoveChance>Modifier for Cross-Species Romance:</RRR.AlienLoveChance>
 	<RRR.AlienLoveChanceTip>This slider determines how likely pawns are to be romantically interested in pawns of other species. (Obviously, the setting only matters if you're actually playing with alien races in your game.) If set to 100%, pawns will be just as likely to attempt to romance members of alien species as to romance members of their own species. If set to 0%, cross-species romances will never occur.</RRR.AlienLoveChanceTip>

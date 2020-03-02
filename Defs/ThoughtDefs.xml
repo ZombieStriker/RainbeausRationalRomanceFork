@@ -39,7 +39,7 @@
 		<stages>
 			<li>
 				<label>rebuffed by {0}</label>
-				<description>What, am I not pretty enough for a tumble??</description>
+				<description>What, am I not pretty enough for a tumble?</description>
 				<baseMoodEffect>-1</baseMoodEffect>
 			</li>
 		</stages>

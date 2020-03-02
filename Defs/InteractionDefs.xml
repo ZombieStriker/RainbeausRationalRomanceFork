@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>
-
 	<InteractionDef>
 		<defName>TriedHookupWith</defName>
 		<label>hookup attempt</label>
@@ -19,7 +18,6 @@
 			</rulesStrings>
 		</logRulesRecipient>
 	</InteractionDef>
-
 	<RulePackDef>
 		<defName>HookupSucceeded</defName>
 		<rulePack>
