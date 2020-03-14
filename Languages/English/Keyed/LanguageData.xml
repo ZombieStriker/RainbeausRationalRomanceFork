@@ -18,6 +18,6 @@
 	
 	<RRR.DateRate>Base Rate at Which Pawns Will Propose Dates:</RRR.DateRate>
 	<RRR.HookupRate>Base Rate at Which Pawns Will Propose Hookups:</RRR.HookupRate>
-  <RRR.BigotCorrectionRate>Base Rate at Which Mysogynist/Misanderist Pawns Wont be Attracted to Just the Gender They Hate:</RRR.BigotCorrectionRate>
+  <RRR.BigotCorrectionRate>Base Rate at Which Misogynist/Misanderist Pawns Wont be Attracted to Just the Gender They Hate:</RRR.BigotCorrectionRate>
 	
 </LanguageData>

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ModMetaData>
-	<name>[RF] Rational Romance [1.1][Unofficial Fork]</name>
+	<name>2 Rational 2 Romance [1.1][Unofficial Fork of Rational Romance]</name>
 	<author>Rainbeau Flambe / Zombie_Striker</author>
-	<url>https://ludeon.com/forums/index.php?topic=46165</url>
+	<url>https://ludeon.com/forums/index.php?topic=51104.0</url>
   <supportedVersions>
     <li>1.1</li>
   </supportedVersions>
-  <packageId>rainbeau.rational.romance</packageId>
+  <packageId>zombiestriker.rational.romance2</packageId>
   <modDependenciesByVersion>
     <v1.1>
       <li>
@@ -18,11 +18,12 @@
     </v1.1>
   </modDependenciesByVersion>
   <description>
-    Since Rainbeau Flambe has stopped developing mods for Rimworld, I have decided to update and maintain this project. If you are a modder and would like to fix some bugs or add some more improvments, you can find the sourcecode on github (link below):
+    Since Rainbeau Flambe has stopped developing mods for Rimworld, I have decided to update and maintain this project. Besides updating this mod to 1.1, I have added a few features and performance fixes to the project. This includes a change to how many times a pawn can try to hook up with the same pawn, and how likely people can be romanced to genders they are not attracted to.  I have also added a slider for Misogynists and Misandrists for how likely they are to be attracted to the gender they hate, and changed the likelihood that these bigots will successfully romance the other person. (The end result is less breakups from pawns who naturally hated each-other.)
+
+    Github:
     https://github.com/ZombieStriker/RainbeausRationalRomanceFork
 
-    - Zombie_Striker
-
+    -Zombie_Striker
     (Last update: 3/1/2020)
 
     "Rational Romance" overhauls RimWorld's romance system, fixing some problems and adding some new options. Think of it as a "spiritual successor" to SeveralPuffins' popular but sadly abandoned a17 mod, "Romance Diversified."

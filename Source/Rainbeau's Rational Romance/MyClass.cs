@@ -179,7 +179,7 @@ namespace RationalRomance_Code {
 					pawn.story.traits.GainTrait(new Trait(TraitDefOf.Bisexual, 0, false));
 				}
 				else {
-					//Makes it so mysogynists and misandrists are less likely to have to romance the "hated sex".
+					//Makes it so misogynists and misandrists are less likely to have to romance the "hated sex".
 					if (hatesOwnGender && Rand.Value < Controller.Settings.BigotCorrectionRate) { 
 							pawn.story.traits.GainTrait(new Trait(TraitDefOf.Bisexual, 0, false));
 					}else{
@@ -587,7 +587,7 @@ namespace RationalRomance_Code {
 		// CHANGE: Pawn can't perform romance attempt if recently rebuffed.
 		// CHANGE: Pawn can't target others or be targeted if current lover is good enough.
 		// CHANGE: Allowed for polyamory.
-		// CHANGE: Misandrists and Mysogynists are less likely to successfully romance the other gender.
+		// CHANGE: Misandrists and Misogynists are less likely to successfully romance the other gender.
 		public static bool Prefix(Pawn initiator, Pawn recipient, ref float __result) {
 			if (!initiator.story.traits.HasTrait(TraitDefOf.Asexual) && !initiator.story.traits.HasTrait(TraitDefOf.Bisexual) && !initiator.story.traits.HasTrait(TraitDefOf.Gay) && !initiator.story.traits.HasTrait(RRRTraitDefOf.Straight)) {
 				ExtraTraits.AssignOrientation(initiator);
@@ -722,8 +722,8 @@ namespace RationalRomance_Code {
 					//Atleast one of them is gay. Not a healthy relationship, but what can you do.
 				}
 			}
-
-			//If a mysogynist tries to romance a woman, it most likely isn't going to go well. It can, but not as well as someone who respects women.
+			
+			//If a misogynist tries to romance a woman, it most likely isn't going to go well. It can, but not as well as someone who respects women.
 			float bigotRomanceChancePercent = 1;
 			if(initiator.story.traits.HasTrait(TraitDefOf.DislikesMen) && recipient.gender == Gender.Male){
 				bigotRomanceChancePercent *= 0.6f;
