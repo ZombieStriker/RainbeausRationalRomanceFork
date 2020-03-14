@@ -33,11 +33,12 @@ namespace RationalRomance_Code {
 		public float alienLoveChance = 33f;
 		public float dateRate = 100f;
 		public float hookupRate = 100f;
+		public float BigotCorrectionRate = 50f;
 		public void DoWindowContents(Rect canvas) {
 			Listing_Standard list = new Listing_Standard();
 			list.ColumnWidth = canvas.width;
 			list.Begin(canvas);
-			list.Gap(24);
+			list.Gap(2);
 			Text.Font = GameFont.Tiny;
 			list.Label("RRR.Overview".Translate());
 			Text.Font = GameFont.Small;
@@ -65,13 +66,17 @@ namespace RationalRomance_Code {
 			list.Gap(48);
 			list.Label("RRR.PolyamoryChance".Translate()+"  "+(int)polyChance+"%", -1f, "RRR.PolyamoryChanceTip".Translate());
 			polyChance = list.Slider(polyChance, 0f, 100.99f);
-			list.Gap();
+			list.Gap(2);
+			Text.Font = GameFont.Tiny;
 			list.Label("RRR.DateRate".Translate()+"  "+(int)dateRate+"%");
 			dateRate = list.Slider(dateRate, 0f, 200.99f);
-			list.Gap();
+			list.Gap(2);
 			list.Label("RRR.HookupRate".Translate()+"  "+(int)hookupRate+"%");
 			hookupRate = list.Slider(hookupRate, 0f, 200.99f);
-			list.Gap();
+			list.Gap(2);
+			list.Label("RRR.BigotCorrectionRate".Translate() + "  " + (int)BigotCorrectionRate + "%");
+			BigotCorrectionRate = list.Slider(BigotCorrectionRate, 0f, 100.99f);
+			list.Gap(2);
 			list.Label("RRR.AlienLoveChance".Translate()+"  "+(int)alienLoveChance+"%", -1f, "RRR.AlienLoveChanceTip".Translate());
 			alienLoveChance = list.Slider(alienLoveChance, 0f, 100.99f);
 			list.End();
@@ -86,6 +91,7 @@ namespace RationalRomance_Code {
 			Scribe_Values.Look(ref alienLoveChance, "alienLoveChance", 33.0f);
 			Scribe_Values.Look(ref dateRate, "dateRate", 100.0f);
 			Scribe_Values.Look(ref hookupRate, "hookupRate", 100.0f);
+			Scribe_Values.Look(ref BigotCorrectionRate, "BigotCorrectionRate", 50.0f);
 		}
 	}
 
@@ -140,6 +146,31 @@ namespace RationalRomance_Code {
 					pawn.story.traits.GainTrait(new Trait(TraitDefOf.Asexual, 0, false));
 				}
 			}
+			Boolean hatesOwnGender = false;
+			Boolean hatesOtherGender = false;
+			if (pawn.story.traits.HasTrait(TraitDefOf.DislikesMen))
+			{
+				if(pawn.gender == Gender.Male)
+				{
+					hatesOwnGender = true;
+				}
+				else
+				{
+					hatesOtherGender = true;
+				}
+			}
+			if (pawn.story.traits.HasTrait(TraitDefOf.DislikesWomen))
+			{
+				if (pawn.gender == Gender.Female)
+				{
+					hatesOwnGender = true;
+				}
+				else
+				{
+					hatesOtherGender = true;
+				}
+			}
+
 			else if (orientation < ((Controller.Settings.asexualChance + Controller.Settings.bisexualChance) / 100)) {
 				pawn.story.traits.GainTrait(new Trait(TraitDefOf.Bisexual, 0, false));
 			}
@@ -148,15 +179,25 @@ namespace RationalRomance_Code {
 					pawn.story.traits.GainTrait(new Trait(TraitDefOf.Bisexual, 0, false));
 				}
 				else {
-					pawn.story.traits.GainTrait(new Trait(TraitDefOf.Gay, 0, false));
+					//Makes it so mysogynists and misandrists are less likely to have to romance the "hated sex".
+					if (hatesOwnGender && Rand.Value < Controller.Settings.BigotCorrectionRate) { 
+							pawn.story.traits.GainTrait(new Trait(TraitDefOf.Bisexual, 0, false));
+					}else{
+						pawn.story.traits.GainTrait(new Trait(TraitDefOf.Gay, 0, false));
+					}
 				}
 			}
 			else {
 				if (LovePartnerRelationUtility.HasAnyLovePartnerOfTheSameGender(pawn) || LovePartnerRelationUtility.HasAnyExLovePartnerOfTheSameGender(pawn)) {
 					pawn.story.traits.GainTrait(new Trait(TraitDefOf.Bisexual, 0, false));
 				}
-				else {
-					pawn.story.traits.GainTrait(new Trait(RRRTraitDefOf.Straight, 0, false));
+				else
+				{
+					if (hatesOtherGender && Rand.Value < Controller.Settings.BigotCorrectionRate) { 
+							pawn.story.traits.GainTrait(new Trait(TraitDefOf.Bisexual, 0, false));
+					}else{
+						pawn.story.traits.GainTrait(new Trait(RRRTraitDefOf.Straight, 0, false));
+					}
 				}
 			}
 			if (!pawn.story.traits.HasTrait(TraitDefOf.Asexual) && !pawn.story.traits.HasTrait(RRRTraitDefOf.Polyamorous)) {
@@ -546,6 +587,7 @@ namespace RationalRomance_Code {
 		// CHANGE: Pawn can't perform romance attempt if recently rebuffed.
 		// CHANGE: Pawn can't target others or be targeted if current lover is good enough.
 		// CHANGE: Allowed for polyamory.
+		// CHANGE: Misandrists and Mysogynists are less likely to successfully romance the other gender.
 		public static bool Prefix(Pawn initiator, Pawn recipient, ref float __result) {
 			if (!initiator.story.traits.HasTrait(TraitDefOf.Asexual) && !initiator.story.traits.HasTrait(TraitDefOf.Bisexual) && !initiator.story.traits.HasTrait(TraitDefOf.Gay) && !initiator.story.traits.HasTrait(RRRTraitDefOf.Straight)) {
 				ExtraTraits.AssignOrientation(initiator);
@@ -651,21 +693,54 @@ namespace RationalRomance_Code {
 			float romanceChancePercent = Mathf.InverseLerp(0.25f, 1f, romanceChance);
 			float opinionPercent = Mathf.InverseLerp(5f, 100f, (float)opinionOfTarget);
 			float orientationMatch = 1f;
-			if (initiator.story.traits.HasTrait(TraitDefOf.Asexual) || recipient.story.traits.HasTrait(TraitDefOf.Asexual)) {
+			if (initiator.story.traits.HasTrait(TraitDefOf.Asexual) && recipient.story.traits.HasTrait(TraitDefOf.Asexual))
+			{
+				//Ace people may not be Aro. They can have non-sexual relationships as well.
+				//orientationMatch = 1f;
+			}else if (initiator.story.traits.HasTrait(TraitDefOf.Asexual) || recipient.story.traits.HasTrait(TraitDefOf.Asexual)) {
 				orientationMatch = 0.15f;
-			}
-			if (initiator.gender != recipient.gender) {
-				if (initiator.story.traits.HasTrait(TraitDefOf.Gay) || recipient.story.traits.HasTrait(TraitDefOf.Gay)) {
-					orientationMatch = 0.15f;
+			}else if (initiator.gender != recipient.gender)
+			{
+				if ((initiator.story.traits.HasTrait(TraitDefOf.Asexual) || initiator.story.traits.HasTrait(TraitDefOf.Gay)) && (recipient.story.traits.HasTrait(TraitDefOf.Gay) || recipient.story.traits.HasTrait(TraitDefOf.Asexual)))
+				{
+					//If neigther of them want to be in a relationship with the other. Set it to 0.01
+					orientationMatch = 0.01f;
 				}
-			}
-			if (initiator.gender == recipient.gender) {
+					if (initiator.story.traits.HasTrait(TraitDefOf.Gay) || recipient.story.traits.HasTrait(TraitDefOf.Gay)) {
+					orientationMatch = 0.15f;
+					//Atleast one of them is not into it
+				}
+			}else if (initiator.gender == recipient.gender) {
 				genderAggressiveness = 1f;
+				if ((initiator.story.traits.HasTrait(TraitDefOf.Asexual) || initiator.story.traits.HasTrait(RRRTraitDefOf.Straight)) && (recipient.story.traits.HasTrait(RRRTraitDefOf.Straight) || recipient.story.traits.HasTrait(TraitDefOf.Asexual)))
+				{
+					//"Woah dude! We're straight. Why are we hitting on eachother?"
+					orientationMatch = 0.01f;
+				}
 				if (initiator.story.traits.HasTrait(RRRTraitDefOf.Straight) || recipient.story.traits.HasTrait(RRRTraitDefOf.Straight)) {
 					orientationMatch = 0.15f;
+					//Atleast one of them is gay. Not a healthy relationship, but what can you do.
 				}
 			}
-			__result = 1.15f * genderAggressiveness * romanceChancePercent * opinionPercent * cheatChance * orientationMatch;
+
+			//If a mysogynist tries to romance a woman, it most likely isn't going to go well. It can, but not as well as someone who respects women.
+			float bigotRomanceChancePercent = 1;
+			if(initiator.story.traits.HasTrait(TraitDefOf.DislikesMen) && recipient.gender == Gender.Male){
+				bigotRomanceChancePercent *= 0.6f;
+			}else if (initiator.story.traits.HasTrait(TraitDefOf.DislikesWomen) && recipient.gender == Gender.Female)
+			{
+				bigotRomanceChancePercent *= 0.6f;
+			}
+			if (recipient.story.traits.HasTrait(TraitDefOf.DislikesMen) && initiator.gender == Gender.Male)
+			{
+				bigotRomanceChancePercent *= 0.6f;
+			}else if (recipient.story.traits.HasTrait(TraitDefOf.DislikesMen) && initiator.gender == Gender.Male)
+			{
+				bigotRomanceChancePercent *= 0.6f;
+			}
+
+
+			__result = 1.15f * genderAggressiveness * romanceChancePercent * opinionPercent * cheatChance * orientationMatch *bigotRomanceChancePercent;
 			return false;
 		}
 	}
@@ -683,8 +758,24 @@ namespace RationalRomance_Code {
 			single *= recipient.relations.SecondaryRomanceChanceFactor(initiator);
 			single *= Mathf.InverseLerp(5f, 100f, (float)recipient.relations.OpinionOf(initiator));
 			float single1 = 1f;
-			if (recipient.story.traits.HasTrait(RRRTraitDefOf.Polyamorous) && !SexualityUtilities.HasNonPolyPartner(recipient)) { }
-			else {
+
+			Boolean isPoly = recipient.story.traits.HasTrait(RRRTraitDefOf.Polyamorous);
+
+			//FIX: Makes sure partners cant romance the same f'n person again.
+			if (initiator.relations.GetDirectRelation(PawnRelationDefOf.Lover, recipient) != null)
+			{
+				__result = 0f;
+				return false;
+			}
+			if (initiator.relations.GetDirectRelation(PawnRelationDefOf.Spouse, recipient) != null)
+			{
+				__result = 0f;
+				return false;
+			}
+
+			if ( isPoly && !SexualityUtilities.HasNonPolyPartner(recipient)) { 
+			
+			}else {
 				Pawn firstDirectRelationPawn = null;
 				if (recipient.relations.GetFirstDirectRelationPawn(PawnRelationDefOf.Lover, (Pawn x) => !x.Dead) != null) {
 					firstDirectRelationPawn = recipient.relations.GetFirstDirectRelationPawn(PawnRelationDefOf.Lover, null);

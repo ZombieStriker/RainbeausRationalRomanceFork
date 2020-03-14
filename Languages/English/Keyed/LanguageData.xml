@@ -3,7 +3,7 @@
 
 	<RRR.RationalRomance>Rainbeau's Rational Romance</RRR.RationalRomance>
 
-	<RRR.Overview>Each pawn in the game will be either straight, bisexual, gay, or asexual. The sliders below allow you to determine the relative commonality of each of those orientations. Obviously, the total must, and will always, be 100%. (If a pawn has a 60% chance of being bisexual, after all, he or she can't also have a 70% chance of being straight!)</RRR.Overview>
+	<RRR.Overview>Each pawn in the game will be either straight, bisexual, gay, or asexual. The sliders below allow you to determine the relative commonality of each of those orientations. Obviously, the total will be altered so all values equal 100%.</RRR.Overview>
 	
 	<RRR.StraightChance>Chance of a Pawn Being Straight (Romantically Interested Only in Opposite-Gender Partners):</RRR.StraightChance>
 	<RRR.BisexualChance>Chance of a Pawn Being Bisexual (Romantically Interested in Partners of Either Gender):</RRR.BisexualChance>
@@ -18,5 +18,6 @@
 	
 	<RRR.DateRate>Base Rate at Which Pawns Will Propose Dates:</RRR.DateRate>
 	<RRR.HookupRate>Base Rate at Which Pawns Will Propose Hookups:</RRR.HookupRate>
+  <RRR.BigotCorrectionRate>Base Rate at Which Mysogynist/Misanderist Pawns Wont be Attracted to Just the Gender They Hate:</RRR.BigotCorrectionRate>
 	
 </LanguageData>
