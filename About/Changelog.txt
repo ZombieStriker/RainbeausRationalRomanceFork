@@ -2,6 +2,16 @@
   Changelog for "Rainbeau's Rational Romance"
 ---------------------------------------------------------------------------------
 
+- 3/17/2020
+	- Fixed Polyamory Bed Support
+	- Fixed pawns inheriting sexuality traits from parents. Their sexuality will be rerolled by default.
+	- Formatted Code
+
+- 3/16/2020
+	- Fixed messages for "WantToSleepWithSpouseOrLover" thoughtdef for polyamorous pawns
+	- Made Polyamorous a nullifying trait for the Affair event
+	- Stopped giving pawns the "CheatedOnMe" if their partner was polyamorous.
+
 - 3/2/2020
 	- Zombie_Striker will not update the code.
 	- V1.1 support.

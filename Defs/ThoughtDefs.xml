@@ -15,7 +15,8 @@
 		</stages>
 	</ThoughtDef>
 
-	<ThoughtDef>
+
+  <ThoughtDef>
 		<defName>RebuffedMyHookupAttempt</defName>
 		<thoughtClass>Thought_MemorySocial</thoughtClass>
 		<durationDays>5.0</durationDays>
@@ -73,6 +74,6 @@
 				<baseMoodEffect>-1</baseMoodEffect>
 			</li>
 		</stages>
-	</ThoughtDef>	
-	
+	</ThoughtDef>
+
 </Defs>

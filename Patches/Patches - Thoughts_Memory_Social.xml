@@ -303,4 +303,15 @@
 		</value>
 	</Operation>
 
+
+
+  <!-- WantToSleepWithSpouseOrLover - Remove Poly And Replace With Own -->
+
+    <Operation Class="PatchOperationAdd">
+          <success>Always</success>
+          <xpath>Defs/ThoughtDef[defName="WantToSleepWithSpouseOrLover"]/nullifyingTraits</xpath>
+          <value>
+            <li>Polyamorous</li>
+          </value>
+    </Operation>
 </Patch>

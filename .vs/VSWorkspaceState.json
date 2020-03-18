@@ -1,17 +1,16 @@
 {
   "ExpandedNodes": [
     "",
-    "\\Defs",
-    "\\Languages",
-    "\\Languages\\English",
-    "\\Languages\\English\\Keyed",
+    "\\Patches",
     "\\Source",
     "\\Source\\Rainbeau's Rational Romance",
     "\\Source\\Rainbeau's Rational Romance\\bin",
     "\\Source\\Rainbeau's Rational Romance\\bin\\Release",
     "\\Source\\Rainbeau's Rational Romance\\obj",
-    "\\Source\\Rainbeau's Rational Romance\\obj\\Debug"
+    "\\Source\\Rainbeau's Rational Romance\\obj\\Debug",
+    "\\Source\\Rainbeau's Rational Romance\\obj\\Debug\\TempPE",
+    "\\Source\\Rainbeau's Rational Romance\\obj\\Release"
   ],
-  "SelectedNode": "\\README.md",
+  "SelectedNode": "\\Source\\Rainbeau's Rational Romance\\MyClass.cs",
   "PreviewInSolutionExplorer": false
 }
