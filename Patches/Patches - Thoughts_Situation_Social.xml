@@ -14,10 +14,10 @@
         <success>Always</success>
         <operations>
             <li Class="PatchOperationTest">
-              <xpath>*/ThoughtDef[defName="Affair"]/nullifyingTraits</xpath>
+              <xpath>Defs/ThoughtDef[defName="Affair"]/nullifyingTraits</xpath>
             </li>
             <li Class="PatchOperationAdd">
-                <xpath>*/ThoughtDef[defName="Affair"]/nullifyingTraits</xpath>
+                <xpath>Defs/ThoughtDef[defName="Affair"]/nullifyingTraits</xpath>
                 <value>
                     <li>Polyamorous</li>
                 </value>
@@ -28,11 +28,11 @@
         <success>Always</success>
         <operations>
             <li Class="PatchOperationTest">
-              <xpath>*/ThoughtDef[defName="Affair"]/nullifyingTraits</xpath>
+              <xpath>Defs/ThoughtDef[defName="Affair"]/nullifyingTraits</xpath>
               <success>Invert</success>
             </li>
             <li Class="PatchOperationAdd">
-                <xpath>*/ThoughtDef[defName="Affair"]</xpath>
+                <xpath>Defs/ThoughtDef[defName="Affair"]</xpath>
                 <value>
                     <nullifyingTraits>
                         <li>Polyamorous</li>
@@ -47,10 +47,10 @@
         <success>Always</success>
         <operations>
             <li Class="PatchOperationTest">
-              <xpath>*/ThoughtDef[defName="CheatedOnMe"]/nullifyingTraits</xpath>
+              <xpath>Defs/ThoughtDef[defName="CheatedOnMe"]/nullifyingTraits</xpath>
             </li>
             <li Class="PatchOperationAdd">
-                <xpath>*/ThoughtDef[defName="CheatedOnMe"]/nullifyingTraits</xpath>
+                <xpath>Defs/ThoughtDef[defName="CheatedOnMe"]/nullifyingTraits</xpath>
                 <value>
                     <li>Polyamorous</li>
                 </value>
@@ -61,11 +61,11 @@
         <success>Always</success>
         <operations>
             <li Class="PatchOperationTest">
-              <xpath>*/ThoughtDef[defName="CheatedOnMe"]/nullifyingTraits</xpath>
+              <xpath>Defs/ThoughtDef[defName="CheatedOnMe"]/nullifyingTraits</xpath>
               <success>Invert</success>
             </li>
             <li Class="PatchOperationAdd">
-                <xpath>*/ThoughtDef[defName="CheatedOnMe"]</xpath>
+                <xpath>Defs/ThoughtDef[defName="CheatedOnMe"]</xpath>
                 <value>
                     <nullifyingTraits>
                         <li>Polyamorous</li>
