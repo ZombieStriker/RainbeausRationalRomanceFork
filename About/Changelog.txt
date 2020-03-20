@@ -1,6 +1,10 @@
 ---------------------------------------------------------------------------------
   Changelog for "Rainbeau's Rational Romance"
 ---------------------------------------------------------------------------------
+- 3/18/2020
+	- Second attempt at fixing bed search for "WantToSleepWithSpouseOrLover".
+	- Fixed SharedBed Thought for poly pawns
+	- Fixed SharedRoom thought for poly pawns
 
 - 3/17/2020
 	- Fixed Polyamory Bed Support
