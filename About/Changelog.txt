@@ -1,6 +1,10 @@
 ---------------------------------------------------------------------------------
   Changelog for "Rainbeau's Rational Romance"
 ---------------------------------------------------------------------------------
+- 3/19/2020
+	- Meltup: "Update on Polyamory"
+	- Fixed slept in own bedroom thought for pawns with multiple partners.
+
 - 3/18/2020
 	- Second attempt at fixing bed search for "WantToSleepWithSpouseOrLover".
 	- Fixed SharedBed Thought for poly pawns

@@ -1452,6 +1452,15 @@ namespace RationalRomance_Code
 							}
 						if (!hasStranger)
 							{
+							if (p.needs.mood.thoughts.memories.GetFirstMemoryOfDef(ThoughtDefOf.SleptInBedroom)==null)
+								{
+								p.needs.mood.thoughts.memories.TryGainMemory(ThoughtDefOf.SleptInBedroom);
+								Thought_Memory mem = p.needs.mood.thoughts.memories.GetFirstMemoryOfDef(ThoughtDefOf.SleptInBedroom);
+								if (mem != null)
+									{
+									mem.SetForcedStage(__result.StageIndex);
+									}
+								}
 							__result = ThoughtState.Inactive;
 							break;
 							}
