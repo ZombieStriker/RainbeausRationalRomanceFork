@@ -2,7 +2,7 @@
 <Defs>
 	<TraitDef>
 		<defName>Asexual</defName>
-		<commonality>0.001</commonality>
+    <commonality>0.01</commonality>
 		<degreeDatas>
 			<li>
 				<label>asexual</label>
@@ -14,12 +14,11 @@
 			<li>Gay</li>
 			<li>Straight</li>
 			<li>Polyamorous</li>
-		</conflictingTraits>
+		</conflictingTraits> 
 	</TraitDef>
-
 	<TraitDef>
 		<defName>Bisexual</defName>
-		<commonality>0.001</commonality>
+    <commonality>0.01</commonality>
 		<degreeDatas>
 			<li>
 				<label>bisexual</label>
@@ -35,23 +34,23 @@
 
 	<TraitDef>
 		<defName>Gay</defName>
-		<commonality>0.001</commonality>
-		<degreeDatas>
-			<li>
-				<label>gay</label>
-				<description>{PAWN_nameDef} is romantically attracted to people of {PAWN_possessive} own gender.</description>
-			</li>
-		</degreeDatas>
-		<conflictingTraits>
-			<li>Asexual</li>
-			<li>Bisexual</li>
-			<li>Straight</li>
-		</conflictingTraits>
-	</TraitDef>
+    <commonality>0.01</commonality>
+    <degreeDatas>
+      <li>
+        <label>gay</label>
+        <description>{PAWN_nameDef} is romantically attracted to people of {PAWN_possessive} own gender.</description>
+      </li>
+    </degreeDatas>
+    <conflictingTraits>
+      <li>Asexual</li>
+      <li>Bisexual</li>
+      <li>Straight</li>
+    </conflictingTraits>
+  </TraitDef>
 
-	<TraitDef>
-		<defName>Straight</defName>
-		<commonality>0.001</commonality>
+  <TraitDef>
+    <defName>Straight</defName>
+    <commonality>0.01</commonality>
 		<degreeDatas>
 			<li>
 				<label>straight</label>
@@ -61,8 +60,8 @@
 		<conflictingTraits>
 			<li>Asexual</li>
 			<li>Bisexual</li>
-			<li>Gay</li>
-		</conflictingTraits>
+      <li>Gay</li>
+    </conflictingTraits>
 	</TraitDef>
 
 	<TraitDef>
@@ -95,15 +94,17 @@
 
 	<TraitDef>
 		<defName>Polyamorous</defName>
-		<commonality>0.001</commonality>
-		<degreeDatas>
-			<li>
-				<label>polyamorous</label>
-				<description>{PAWN_nameDef} prefers romantic relationships involving multiple partners to monogamous relationships. {PAWN_pronoun} doesn't mind if {PAWN_possessive} partners romance other people, but will be less happy in a restraining, monogamous relationship.</description>
-			</li>
-		</degreeDatas>
-		<conflictingTraits>
-			<li>Asexual</li>
+    <commonality>0.01</commonality>
+    <degreeDatas>
+      <li>
+        <label>polyamorous</label>
+        <description>{PAWN_nameDef} prefers romantic relationships involving multiple partners to monogamous relationships. {PAWN_pronoun} doesn't mind if {PAWN_possessive} partners romance other people, but will be less happy in a restraining, monogamous relationship.</description>
+      </li>
+    </degreeDatas>
+    <conflictingTraits>
+      <li>Asexual</li>
+      <li>Jealous</li>
+      <li>Greedy</li>
 		</conflictingTraits>
 	</TraitDef>
 	

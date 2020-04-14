@@ -143,95 +143,164 @@ namespace RationalRomance_Code
 
 	public static class ExtraTraits
 		{
+
+
+		public static bool hasSexualTrait(Pawn pawn)
+			{
+			if (pawn.story.traits.GetTrait(TraitDefOf.Bisexual) != null)
+				return true;
+			if (pawn.story.traits.GetTrait(RRRTraitDefOf.Straight) != null)
+				return true;
+			if (pawn.story.traits.GetTrait(TraitDefOf.Gay) != null)
+				return true;
+			if (pawn.story.traits.GetTrait(TraitDefOf.Asexual) != null)
+				return true;
+			return false;
+			}
+
+
 		public static void AssignOrientation(Pawn pawn)
 			{
 			float orientation = Rand.Value;
 			if (pawn.gender == Gender.None) { return; }
+
+			if (hasSexualTrait(pawn))
+				return;
+			if (pawn.kindDef.race.defName.ToLower().Contains("droid") && !AndroidsCompatibility.IsAndroid(pawn))
+				{
+				pawn.story.traits.GainTrait(new Trait(TraitDefOf.Asexual, 0, false));
+				return;
+				}
+
+			bool likesOwn = false;
+			bool likesOther = false;
+
 			if (orientation < (Controller.Settings.asexualChance / 100))
 				{
 				if (LovePartnerRelationUtility.HasAnyLovePartnerOfTheOppositeGender(pawn) || LovePartnerRelationUtility.HasAnyExLovePartnerOfTheOppositeGender(pawn))
 					{
-					pawn.story.traits.GainTrait(new Trait(TraitDefOf.Bisexual, 0, false));
+					likesOther = true;
 					}
-				else if (LovePartnerRelationUtility.HasAnyLovePartnerOfTheSameGender(pawn) || LovePartnerRelationUtility.HasAnyExLovePartnerOfTheSameGender(pawn))
+				if (LovePartnerRelationUtility.HasAnyLovePartnerOfTheSameGender(pawn) || LovePartnerRelationUtility.HasAnyExLovePartnerOfTheSameGender(pawn))
+					{
+					likesOwn = true;
+					}
+				if (pawn.story.traits.HasTrait(RRRTraitDefOf.Philanderer))
+					{
+					likesOther = true;
+					likesOwn = true;
+					}
+				else
+					{
+					pawn.story.traits.GainTrait(new Trait(TraitDefOf.Asexual, 0, false));
+					return;
+					}
+				}
+			if (!hasSexualTrait(pawn))
+				{
+
+				if (LovePartnerRelationUtility.HasAnyLovePartnerOfTheOppositeGender(pawn) || LovePartnerRelationUtility.HasAnyExLovePartnerOfTheOppositeGender(pawn))
+					{
+					likesOther = true;
+					}
+				if (LovePartnerRelationUtility.HasAnyLovePartnerOfTheSameGender(pawn) || LovePartnerRelationUtility.HasAnyExLovePartnerOfTheSameGender(pawn))
+					{
+					likesOwn = true;
+					}
+
+				bool hatesOwnGender = false;
+				bool hatesOtherGender = false;
+				if (pawn.story.traits.HasTrait(TraitDefOf.DislikesMen))
+					{
+					if (pawn.gender == Gender.Male)
+						{
+						hatesOwnGender = true;
+						}
+					else
+						{
+						hatesOtherGender = true;
+						}
+					}
+				if (pawn.story.traits.HasTrait(TraitDefOf.DislikesWomen))
+					{
+					if (pawn.gender == Gender.Female)
+						{
+						hatesOwnGender = true;
+						}
+					else
+						{
+						hatesOtherGender = true;
+						}
+					}
+
+				else if (orientation < ((Controller.Settings.asexualChance + Controller.Settings.bisexualChance) / 100))
+					{
+					likesOther = true;
+					likesOwn = true;
+					//bi
+					}
+				else if (orientation < ((Controller.Settings.asexualChance + Controller.Settings.bisexualChance + Controller.Settings.gayChance) / 100))
+					{
+					//Makes it so misogynists and misandrists are less likely to have to romance the "hated sex".
+					if (hatesOwnGender && Rand.Value < Controller.Settings.BigotCorrectionRate)
+						{
+						if (Rand.Value < 100F - Controller.Settings.straightChance)
+							{
+							likesOther = true;
+							//Likes own too
+							}
+						else
+							{
+							likesOther = true;
+							likesOwn = false;
+							}
+						}
+					else
+						{
+						likesOwn = true;
+						}
+
+					}
+				else
+					{
+					//Makes it so misogynists and misandrists are less likely to have to romance the "hated sex".
+					if (hatesOtherGender && Rand.Value < Controller.Settings.BigotCorrectionRate)
+						{
+						if (Rand.Value < 100F - Controller.Settings.gayChance)
+							{
+							likesOwn = true;
+							//Likes other too.
+							}
+						else
+							{
+							likesOwn = true;
+							likesOther = false;
+							}
+						}
+					else
+						{
+						likesOther = true;
+						}
+					}
+
+				if (likesOther && likesOwn)
 					{
 					pawn.story.traits.GainTrait(new Trait(TraitDefOf.Bisexual, 0, false));
 					}
-				else if (pawn.story.traits.HasTrait(RRRTraitDefOf.Philanderer))
+				else if (likesOther && !likesOwn)
 					{
-					pawn.story.traits.GainTrait(new Trait(TraitDefOf.Bisexual, 0, false));
+					pawn.story.traits.GainTrait(new Trait(RRRTraitDefOf.Straight, 0, false));
+					}
+				else if (!likesOther && likesOwn)
+					{
+					pawn.story.traits.GainTrait(new Trait(TraitDefOf.Gay, 0, false));
 					}
 				else
 					{
 					pawn.story.traits.GainTrait(new Trait(TraitDefOf.Asexual, 0, false));
 					}
 				}
-			Boolean hatesOwnGender = false;
-			Boolean hatesOtherGender = false;
-			if (pawn.story.traits.HasTrait(TraitDefOf.DislikesMen))
-				{
-				if (pawn.gender == Gender.Male)
-					{
-					hatesOwnGender = true;
-					}
-				else
-					{
-					hatesOtherGender = true;
-					}
-				}
-			if (pawn.story.traits.HasTrait(TraitDefOf.DislikesWomen))
-				{
-				if (pawn.gender == Gender.Female)
-					{
-					hatesOwnGender = true;
-					}
-				else
-					{
-					hatesOtherGender = true;
-					}
-				}
 
-			else if (orientation < ((Controller.Settings.asexualChance + Controller.Settings.bisexualChance) / 100))
-				{
-				pawn.story.traits.GainTrait(new Trait(TraitDefOf.Bisexual, 0, false));
-				}
-			else if (orientation < ((Controller.Settings.asexualChance + Controller.Settings.bisexualChance + Controller.Settings.gayChance) / 100))
-				{
-				if (LovePartnerRelationUtility.HasAnyLovePartnerOfTheOppositeGender(pawn) || LovePartnerRelationUtility.HasAnyExLovePartnerOfTheOppositeGender(pawn))
-					{
-					pawn.story.traits.GainTrait(new Trait(TraitDefOf.Bisexual, 0, false));
-					}
-				else
-					{
-					//Makes it so misogynists and misandrists are less likely to have to romance the "hated sex".
-					if (hatesOwnGender && Rand.Value < Controller.Settings.BigotCorrectionRate)
-						{
-						pawn.story.traits.GainTrait(new Trait(TraitDefOf.Bisexual, 0, false));
-						}
-					else
-						{
-						pawn.story.traits.GainTrait(new Trait(TraitDefOf.Gay, 0, false));
-						}
-					}
-				}
-			else
-				{
-				if (LovePartnerRelationUtility.HasAnyLovePartnerOfTheSameGender(pawn) || LovePartnerRelationUtility.HasAnyExLovePartnerOfTheSameGender(pawn))
-					{
-					pawn.story.traits.GainTrait(new Trait(TraitDefOf.Bisexual, 0, false));
-					}
-				else
-					{
-					if (hatesOtherGender && Rand.Value < Controller.Settings.BigotCorrectionRate)
-						{
-						pawn.story.traits.GainTrait(new Trait(TraitDefOf.Bisexual, 0, false));
-						}
-					else
-						{
-						pawn.story.traits.GainTrait(new Trait(RRRTraitDefOf.Straight, 0, false));
-						}
-					}
-				}
 			if (!pawn.story.traits.HasTrait(TraitDefOf.Asexual) && !pawn.story.traits.HasTrait(RRRTraitDefOf.Polyamorous))
 				{
 				if (Rand.Value < (Controller.Settings.polyChance / 100))
@@ -1376,6 +1445,7 @@ namespace RationalRomance_Code
 					if (partnersInBed.Count() > 0 && multiplePartners)
 						{
 						__result = ThoughtState.Inactive;
+						return;
 						}
 
 					//TODO: Tempfix: As long as there is atleast someone else in the bed, just accept that it is alright.
@@ -1410,62 +1480,80 @@ namespace RationalRomance_Code
 				}
 			}
 		}
-
-	/*[HarmonyPatch(typeof(ThoughtWorker_Affair), "CurrentStateInternal")]
-	public static class ThoughtWorker_Affair_CurrentStateInternal
-	{
-		// CHANGE: Allowed for polyamory.
-		public static void CurrentStateInternal(ref ThoughtState __result, Pawn p)
+	/*
+	[HarmonyPatch(typeof(ThoughtWorker_OpinionOfMyLover), "CurrentStateInternal")]
+	public static class ThoughtWorker_OpinionOfMyLover_CurrentStateInternal
 		{
-			if (__result.StageIndex != ThoughtState.Inactive.StageIndex)
+		// CHANGE: Allowed for polyamory.
+		public static void Postfix(ref ThoughtState __result, Pawn p)
 			{
-				if (p.story.traits.HasTrait(RRRTraitDefOf.Polyamorous))
+			if (__result.StageIndex != ThoughtState.Inactive.StageIndex)
 				{
-					__result = false;
-					Log.Message("RR2: PolyAffair - " + __result.Reason);
+				if (p.story.traits.HasTrait(RRRTraitDefOf.Polyamorous))
+					{
+						((ThoughtWorker_OpinionOfMyLover)null).
+
+					/*List<Thought_Memory> thoughts = new List<Thought_Memory>();
+					IEnumerable<Pawn> loveTree = (from r in p.relations.PotentiallyRelatedPawns where LovePartnerRelationUtility.LovePartnerRelationExists(p, r) select r);
+					foreach (Pawn pawn in loveTree)
+						foreach (Thought_Memory mem in p.needs.mood.thoughts.memories.NumMemoriesOfDef.Memories)
+							{
+								Log.Message(pawn.Name+" mem " + mem.LabelCap);
+
+							}* /
+
+					/*if (p.needs.mood.thoughts.memories.NumMemoriesOfDef() == null)
+						{
+						p.needs.mood.thoughts.memories.TryGainMemory(ThoughtDefOf.SleptInBedroom);
+						Thought_Memory mem = p.needs.mood.thoughts.memories.GetFirstMemoryOfDef(ThoughtDefOf.SleptInBedroom);
+						if (mem != null)
+							{
+							mem.SetForcedStage(__result.StageIndex);
+							}
+						}
+					}
+					}
 				}
 			}
-		}
-	}*/
+		}*/
+
 
 	[HarmonyPatch(typeof(ThoughtWorker_NoPersonalBedroom), "CurrentStateInternal")]
 	public static class ThoughtWorker_NoPersonalBedroom_CurrentStateInternal
 		{
 		// CHANGE: Allowed for polyamory.
-		public static void Prefix(ref ThoughtState __result, Pawn p)
+		public static void Postfix(ref ThoughtState __result, Pawn p)
 			{
-			if (__result.StageIndex != ThoughtState.Inactive.StageIndex)
-				{
-				IEnumerable<Pawn> loveTree = SexualityUtilities.getAllConnectedPawnsFirstRemoved(p);
-				bool hasStranger = false;
-				if (p.CurrentBed() != null && p.CurrentBed().GetRoom() != null)
-					foreach (Building_Bed bed in p.CurrentBed().GetRoom().ContainedBeds)
+			IEnumerable<Pawn> loveTree = SexualityUtilities.getAllLoverPawnsFirstRemoved(p);
+			bool hasStranger = false;
+			if (p.CurrentBed() != null && p.CurrentBed().GetRoom() != null)
+				foreach (Building_Bed bed in p.CurrentBed().GetRoom().ContainedBeds)
+					{
+					foreach (Pawn pawn in bed.OwnersForReading)
 						{
-						foreach (Pawn pawn in bed.OwnersForReading)
+						if (!loveTree.Contains(pawn) && pawn != p)
 							{
-							if (!loveTree.Contains(pawn))
-								{
-								hasStranger = true;
-								break;
-								}
-
-							}
-						if (!hasStranger)
-							{
-							if (p.needs.mood.thoughts.memories.GetFirstMemoryOfDef(ThoughtDefOf.SleptInBedroom)==null)
-								{
-								p.needs.mood.thoughts.memories.TryGainMemory(ThoughtDefOf.SleptInBedroom);
-								Thought_Memory mem = p.needs.mood.thoughts.memories.GetFirstMemoryOfDef(ThoughtDefOf.SleptInBedroom);
-								if (mem != null)
-									{
-									mem.SetForcedStage(__result.StageIndex);
-									}
-								}
-							__result = ThoughtState.Inactive;
+							hasStranger = true;
 							break;
 							}
+
 						}
-				}
+					if (!hasStranger)
+						{
+						if (p.needs.mood.thoughts.memories.GetFirstMemoryOfDef(ThoughtDefOf.SleptInBedroom) == null)
+							{
+							p.needs.mood.thoughts.memories.TryGainMemory(ThoughtDefOf.SleptInBedroom);
+							Thought_Memory mem = p.needs.mood.thoughts.memories.GetFirstMemoryOfDef(ThoughtDefOf.SleptInBedroom);
+							if (mem != null)
+								{
+								mem.SetForcedStage(__result.StageIndex);
+								}
+							}
+						__result = ThoughtState.Inactive;
+						p.needs.mood.thoughts.memories.RemoveMemoriesOfDef(ThoughtDefOf.SleptInBarracks);
+						break;
+						}
+					}
 			}
 		}
 
@@ -1475,26 +1563,88 @@ namespace RationalRomance_Code
 	public static class ThoughtWorker_SharedBed_CurrentStateInternal
 		{
 		// CHANGE: Allowed for polyamory.
-		public static void Prefix(ref ThoughtState __result, Pawn p)
+		public static void Postfix(ref ThoughtState __result, Pawn p)
 			{
-			if (__result.StageIndex != ThoughtState.Inactive.StageIndex)
+			if (true)
 				{
-				IEnumerable<Pawn> loveTree = SexualityUtilities.getAllConnectedPawnsFirstRemoved(p);
-				Boolean hasStranger = false;
-				if (p.CurrentBed() != null)
-					foreach (Pawn pawn in p.CurrentBed().OwnersForReading)
+				__result = ThoughtState.Inactive;
+				return;
+				}
+
+			IEnumerable<Pawn> loveTree = SexualityUtilities.getAllLoverPawnsFirstRemoved(p);
+			bool hasStranger = false;
+
+			//IEnumerable<Building_Bed> bed = from r in p.GetRoom().ContainedBeds where r.OwnersForReading.Contains(p) select r;
+			Building_Bed fbed = p.CurrentBed();
+
+			if (fbed != null)
+				{
+				bool needsToCheck = fbed.OwnersForReading.Count > 1;
+				foreach (Pawn pawn in fbed.OwnersForReading)
+					{
+					if (!loveTree.Contains(pawn) && pawn != p)
 						{
-						if (!loveTree.Contains(pawn)) 
-							{
-							hasStranger = true; 
-							break; 
-							}
+						hasStranger = true;
 						}
-				if (hasStranger)
-					__result = ThoughtState.Inactive;
+					}
+				if (needsToCheck)
+					{
+					if (!hasStranger)
+						{
+						__result = ThoughtState.ActiveAtStage(1);
+						Log.Message("Stage 0 " + p.Name);
+						}
+					else
+						{
+						__result = ThoughtState.ActiveAtStage(2);
+						Log.Message("Stage 1 " + p.Name);
+						}
+					}
+				}
+			else
+				{
+				//__result = ThoughtState.ActiveAtStage(1);
+				__result = ThoughtState.Inactive;
 				}
 			}
 		}
+
+	/*public class Thought_SharedBedRRR: Thought_SharedBed
+		{
+		public override string LabelCap
+			{
+			//((Thought_SharedBed)null).LabelCap();
+			Log.Message(pawn.Name + " Test 1");
+			IEnumerable<Pawn> loveTree = SexualityUtilities.getAllLoverPawnsFirstRemoved(pawn);
+			bool hasStranger = false;
+
+			if (pawn.CurrentBed() != null)
+				{
+				bool needsToCheck = pawn.CurrentBed().OwnersForReading.Count > 1;
+				foreach (Pawn pawn2 in pawn.CurrentBed().OwnersForReading)
+					{
+					Log.Message("----pawn " + pawn2.Name + "  ." + (pawn.CurrentBed() == pawn2.CurrentBed()) + "  " + loveTree.Contains(pawn2));
+					if (!loveTree.Contains(pawn2) && pawn != pawn2)
+						{
+						Log.Message("------" + pawn.Name + " + " + pawn2.Name + " FAILED");
+						hasStranger = true;
+						}
+					}
+				if (needsToCheck)
+					{
+					if (!hasStranger)
+						{
+						//return 1;
+						}
+					else
+						{
+						//return -88;
+						}
+					}
+				}
+			return 0;
+			}
+		}*/
 
 	public class Thought_WantToSleepWithSpouseOrLoverRRR : Thought_WantToSleepWithSpouseOrLover
 		{
@@ -1611,8 +1761,8 @@ namespace RationalRomance_Code
 			{
 				layDown.actor.pather.StopDead();
 				JobDriver curDriver = layDown.actor.jobs.curDriver;
-			//				curDriver.layingDown = 2;
-			curDriver.asleep = false;
+				//				curDriver.layingDown = 2;
+				curDriver.asleep = false;
 				};
 			layDown.tickAction = delegate
 			{
@@ -1634,10 +1784,10 @@ namespace RationalRomance_Code
 								{
 								if ((this.actor.story.traits.HasTrait(RRRTraitDefOf.Polyamorous)))
 									{
-								//I know. Bad coding practice. But this just makes sure partners don't feel cheated on if the partner is poly.
-								//The poly person may feel bad if the mono person wants to break it off with them, but the Poly person would 
-								//want to keep the relationshiup going.
-								}
+									//I know. Bad coding practice. But this just makes sure partners don't feel cheated on if the partner is poly.
+									//The poly person may feel bad if the mono person wants to break it off with them, but the Poly person would 
+									//want to keep the relationshiup going.
+									}
 								else
 									{
 									pawn.needs.mood.thoughts.memories.TryGainMemory(ThoughtDefOf.CheatedOnMe, this.actor);
@@ -1831,7 +1981,28 @@ namespace RationalRomance_Code
 			}
 		private bool DoesTargetPawnAcceptAdvance()
 			{
-			return !PawnUtility.WillSoonHaveBasicNeed(this.TargetPawn) && !PawnUtility.EnemiesAreNearby(this.TargetPawn, 9, false) && this.TargetPawn.CurJob.def != JobDefOf.LayDown && this.TargetPawn.CurJob.def != JobDefOf.BeatFire && this.TargetPawn.CurJob.def != JobDefOf.Arrest && this.TargetPawn.CurJob.def != JobDefOf.Capture && this.TargetPawn.CurJob.def != JobDefOf.EscortPrisonerToBed && this.TargetPawn.CurJob.def != JobDefOf.ExtinguishSelf && this.TargetPawn.CurJob.def != JobDefOf.FleeAndCower && this.TargetPawn.CurJob.def != JobDefOf.MarryAdjacentPawn && this.TargetPawn.CurJob.def != JobDefOf.PrisonerExecution && this.TargetPawn.CurJob.def != JobDefOf.ReleasePrisoner && this.TargetPawn.CurJob.def != JobDefOf.Rescue && this.TargetPawn.CurJob.def != JobDefOf.SocialFight && this.TargetPawn.CurJob.def != JobDefOf.SpectateCeremony && this.TargetPawn.CurJob.def != JobDefOf.TakeToBedToOperate && this.TargetPawn.CurJob.def != JobDefOf.TakeWoundedPrisonerToBed && this.TargetPawn.CurJob.def != JobDefOf.UseCommsConsole && this.TargetPawn.CurJob.def != JobDefOf.Vomit && this.TargetPawn.CurJob.def != JobDefOf.Wait_Downed && SexualityUtilities.WillPawnTryHookup(this.TargetPawn) && SexualityUtilities.IsHookupAppealing(this.TargetPawn, base.GetActor());
+			return !PawnUtility.WillSoonHaveBasicNeed(this.TargetPawn) &&
+				!PawnUtility.EnemiesAreNearby(this.TargetPawn, 9, false) &&
+				this.TargetPawn.CurJob.def != JobDefOf.LayDown &&
+				this.TargetPawn.CurJob.def != JobDefOf.BeatFire &&
+				this.TargetPawn.CurJob.def != JobDefOf.Arrest &&
+				this.TargetPawn.CurJob.def != JobDefOf.Capture &&
+				this.TargetPawn.CurJob.def != JobDefOf.EscortPrisonerToBed &&
+				this.TargetPawn.CurJob.def != JobDefOf.ExtinguishSelf &&
+				this.TargetPawn.CurJob.def != JobDefOf.FleeAndCower &&
+				this.TargetPawn.CurJob.def != JobDefOf.MarryAdjacentPawn &&
+				this.TargetPawn.CurJob.def != JobDefOf.PrisonerExecution &&
+				this.TargetPawn.CurJob.def != JobDefOf.ReleasePrisoner &&
+				this.TargetPawn.CurJob.def != JobDefOf.Rescue &&
+				this.TargetPawn.CurJob.def != JobDefOf.SocialFight &&
+				this.TargetPawn.CurJob.def != JobDefOf.SpectateCeremony &&
+				this.TargetPawn.CurJob.def != JobDefOf.TakeToBedToOperate &&
+				this.TargetPawn.CurJob.def != JobDefOf.TakeWoundedPrisonerToBed &&
+				this.TargetPawn.CurJob.def != JobDefOf.UseCommsConsole &&
+				this.TargetPawn.CurJob.def != JobDefOf.Vomit &&
+				this.TargetPawn.CurJob.def != JobDefOf.Wait_Downed &&
+				SexualityUtilities.WillPawnTryHookup(this.TargetPawn) &&
+				SexualityUtilities.IsHookupAppealing(this.TargetPawn, base.GetActor());
 			}
 		private bool IsTargetPawnOkay()
 			{
@@ -1935,10 +2106,10 @@ namespace RationalRomance_Code
 								{
 								this.GetActor().jobs.jobQueue.EnqueueFirst(new Job(RRRJobDefOf.DoLovinCasual, this.TargetPawn, this.TargetBed, this.TargetBed.GetSleepingSlotPos(0)), null);
 								this.TargetPawn.jobs.jobQueue.EnqueueFirst(new Job(RRRJobDefOf.DoLovinCasual, this.GetActor(), this.TargetBed, this.TargetBed.GetSleepingSlotPos(1)), null);
-							//TEST: If we swap to regular lovin, does RiceRiceBaby still work.
-							//this.GetActor().jobs.jobQueue.EnqueueFirst(new Job(JobDefOf.Lovin, this.TargetPawn, this.TargetBed, this.TargetBed.GetSleepingSlotPos(0)), null);
-							//this.TargetPawn.jobs.jobQueue.EnqueueFirst(new Job(JobDefOf.Lovin, this.GetActor(), this.TargetBed, this.TargetBed.GetSleepingSlotPos(1)), null);
-							this.GetActor().jobs.EndCurrentJob(JobCondition.InterruptOptional, true);
+								//TEST: If we swap to regular lovin, does RiceRiceBaby still work.
+								//this.GetActor().jobs.jobQueue.EnqueueFirst(new Job(JobDefOf.Lovin, this.TargetPawn, this.TargetBed, this.TargetBed.GetSleepingSlotPos(0)), null);
+								//this.TargetPawn.jobs.jobQueue.EnqueueFirst(new Job(JobDefOf.Lovin, this.GetActor(), this.TargetBed, this.TargetBed.GetSleepingSlotPos(1)), null);
+								this.GetActor().jobs.EndCurrentJob(JobCondition.InterruptOptional, true);
 								if (this.TargetPawn != null)
 									{
 									if (this.TargetPawn.jobs != null)
@@ -2167,11 +2338,29 @@ namespace RationalRomance_Code
 
 	public class JoyGiver_CasualHookup : JoyGiver
 		{
-		public static float percentRate = Controller.Settings.hookupRate / 2;
+		public static float percentRate = Controller.Settings.hookupRate / 25;
+
+
+		Dictionary<Pawn, long> hookupCooldown = new Dictionary<Pawn, long>();
+
 		public override Job TryGiveJob(Pawn pawn)
 			{
+			if (!hookupCooldown.ContainsKey(pawn))
+				{
+				hookupCooldown.Add(pawn, 0);
+				}
 
 			Job result;
+
+			long tickTime = hookupCooldown.TryGetValue(pawn);
+			long currentTime = Find.TickManager.TicksGame;
+			if (currentTime - tickTime < 300)
+				{
+				hookupCooldown.Remove(pawn);
+				hookupCooldown.Add(pawn, currentTime);
+				return result = null;
+				}
+
 			if (!InteractionUtility.CanInitiateInteraction(pawn))
 				{
 				result = null;
@@ -2211,7 +2400,8 @@ namespace RationalRomance_Code
 						}
 					else
 						{
-						result = new Job(this.def.jobDef, pawn2, building_Bed);
+						result = new Job(this.def.jobDef, pawn, building_Bed);
+						pawn.jobs.jobQueue.EnqueueFirst(new Job(this.def.jobDef, pawn2, building_Bed), null);
 						}
 					}
 				}
@@ -2222,6 +2412,7 @@ namespace RationalRomance_Code
 	public class JoyGiver_Date : JoyGiver
 		{
 		public static float percentRate = Controller.Settings.dateRate / 2;
+
 		public override Job TryGiveJob(Pawn pawn)
 			{
 			Job result;
@@ -2269,22 +2460,27 @@ namespace RationalRomance_Code
 		{
 
 
-
-		public static IEnumerable<Pawn> getAllConnectedPawnsFirstRemoved(Pawn p)
+		public static IEnumerable<Pawn> getAllLoverPawnsFirstRemoved(Pawn p)
 			{
+			//Log.Message("testfor " + p.Name);
 			IEnumerable<Pawn> loveTree = (from r in p.relations.PotentiallyRelatedPawns where LovePartnerRelationUtility.LovePartnerRelationExists(p, r) select r);
 			foreach (Pawn newPawn in loveTree)
 				{
+				if (!loveTree.Contains(newPawn))
+					loveTree.AddItem(newPawn);
+				//Log.Message("--Hello " + newPawn.Name);
 				IEnumerable<Pawn> loveTree2 = (from r in newPawn.relations.PotentiallyRelatedPawns where LovePartnerRelationUtility.LovePartnerRelationExists(newPawn, r) select r);
 				foreach (Pawn secondPawn in loveTree2)
 					{
-					if (!loveTree2.Contains(secondPawn))
+					//Log.Message("-------"+secondPawn.Name);
+					if (!loveTree.Contains(secondPawn))
 						loveTree.AddItem(secondPawn);
 					}
 
 				}
 			return loveTree;
 			}
+
 		public static Pawn FindAttractivePawn(Pawn p1)
 			{
 			Pawn result;
@@ -2362,7 +2558,19 @@ namespace RationalRomance_Code
 					{
 					if (RestUtility.CanUseBedEver(p1, current))
 						{
-						Building_Bed building_Bed = (Building_Bed)GenClosest.ClosestThingReachable(p1.Position, p1.Map, ThingRequest.ForDef(current), PathEndMode.OnCell, TraverseParms.For(p1, Danger.Deadly, 0, false), 9999f, (Thing x) => true, null, 0, -1, false, RegionType.Set_All, false);
+
+						Building_Bed building_Bed = null;
+
+						building_Bed = (Building_Bed)GenClosest.ClosestThingReachable(p1.Position, p1.Map, ThingRequest.ForDef(current),
+							PathEndMode.OnCell, TraverseParms.For(p1, Danger.Deadly, 0, false), 9999f, (Thing x) => true,
+							null, 0, -1, false, RegionType.Normal, false);
+						if (building_Bed == null)
+							{
+							building_Bed = (Building_Bed)GenClosest.ClosestThingReachable(p1.Position, p1.Map, ThingRequest.ForDef(current),
+							PathEndMode.OnCell, TraverseParms.For(p1, Danger.Deadly, 0, false), 9999f, (Thing x) => true,
+							null, 0, -1, false, RegionType.Set_Passable, false);
+							}
+
 						if (building_Bed != null)
 							{
 							if (building_Bed.SleepingSlotsCount > 1)
@@ -2492,7 +2700,86 @@ namespace RationalRomance_Code
 				}
 			return result;
 			}
+
+
+
+
 		}
+	public class ThoughtWorker_SharedBedRRR : ThoughtWorker
+		{
+		protected override ThoughtState CurrentStateInternal(Pawn p)
+			{
+			if (!p.Spawned)
+				return ThoughtState.Inactive;
+			if (!p.RaceProps.Humanlike)
+				return ThoughtState.Inactive;
+			if (!LovePartnerRelationUtility.HasAnyLovePartner(p))
+				{
+				return ThoughtState.Inactive;
+				}
+
+
+			List<Pawn> lovers = new List<Pawn>();
+			List<DirectPawnRelation> directRelations = p.relations.DirectRelations;
+			foreach (DirectPawnRelation rel in directRelations)
+				{
+				if (LovePartnerRelationUtility.IsLovePartnerRelation(rel.def) && !rel.otherPawn.Dead)
+					{
+					lovers.Add(rel.otherPawn);
+					}
+				}
+
+			int partnerCount = 0;
+			int otherPartners = 0;
+			bool stranger = false;
+
+			if (p.CurrentBed() == null)
+				{
+				return ThoughtState.Inactive;
+				}
+			if (p.CurrentBed().OwnersForReading.Count > 1)
+				{
+				foreach (Pawn otherPawn in p.CurrentBed().OwnersForReading)
+					{
+					if (otherPawn == p)
+						continue;
+					if (!lovers.Contains(otherPawn))
+						{
+						IEnumerable<Pawn> partnerspartners = SexualityUtilities.getAllLoverPawnsFirstRemoved(p);
+						if (partnerspartners.Contains(otherPawn))
+							{
+							otherPartners++;
+							}
+						else
+							{
+							stranger = true;
+							break;
+							}
+						}
+					else
+						{
+						partnerCount++;
+						}
+					}
+				}
+
+			if (stranger && partnerCount == 0)
+				{
+				return ThoughtState.ActiveAtStage(0);
+				}
+			else if (partnerCount > 1)
+				{
+				return ThoughtState.ActiveAtStage(2);
+				}
+			else if (partnerCount > 0 && otherPartners > 0)
+				{
+				return ThoughtState.ActiveAtStage(1);
+				}
+
+			return ThoughtState.Inactive;
+			}
+		}
+
 
 	public class ThoughtWorker_Polyamorous : ThoughtWorker
 		{
@@ -2517,14 +2804,56 @@ namespace RationalRomance_Code
 					lovers.Add(rel.otherPawn);
 					}
 				}
-			if (lovers.Count == 1 && !lovers[0].story.traits.HasTrait(RRRTraitDefOf.Polyamorous))
+			if (lovers.Count == 0)
 				{
 				return ThoughtState.ActiveAtStage(0);
+				}
+			if (lovers.Count == 1 && !lovers[0].story.traits.HasTrait(RRRTraitDefOf.Polyamorous))
+				{
+				return ThoughtState.ActiveAtStage(1);
 				}
 			return ThoughtState.Inactive;
 			}
 		}
 
 
+	/// <summary>
+	/// Helper class for ChJees's Androids mod.
+	/// </summary>
+	[StaticConstructorOnStartup]
+	public static class AndroidsCompatibility
+		{
+		public static Type androidCompatType;
+		public static readonly string typeName = "Androids.SexualizeAndroidRJW";
+		private static bool foundType;
 
+		static AndroidsCompatibility()
+			{
+			try
+				{
+				androidCompatType = Type.GetType(typeName);
+				foundType = true;
+				//Log.Message("Found Type: Androids.SexualizeAndroidRJW");
+				}
+			catch
+				{
+				foundType = false;
+				//Log.Message("Did NOT find Type: Androids.SexualizeAndroidRJW");
+				}
+			}
+		public static bool IsAndroid(ThingDef def)
+			{
+			if (def == null || !foundType)
+				{
+				return false;
+				}
+
+			return def.modExtensions != null && def.modExtensions.Any(extension => extension.GetType().FullName == typeName);
+			}
+
+		public static bool IsAndroid(Thing thing)
+			{
+			return IsAndroid(thing.def);
+			}
+		}
 	}

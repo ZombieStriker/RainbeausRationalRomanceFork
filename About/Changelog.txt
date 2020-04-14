@@ -1,6 +1,25 @@
 ---------------------------------------------------------------------------------
   Changelog for "Rainbeau's Rational Romance"
 ---------------------------------------------------------------------------------
+- 4/13/2020
+	- Fixed commonality error 
+	- Fixed possible error with doing full map search
+	- Fixed shared bed with person with multiple partners
+	- Removed base-game SharedBed debuff and created new Debuff that supports Polycules!
+	- Fixed sharing rooms with poly couples.
+
+- 4/11/2020
+	- Added support for androids.
+	- Fixed shared bed thought
+
+- 3/24/2020
+	-Fixed Asexuals getting a Bisexual trait issue
+
+- 3/23/2020
+	- Fixed pathing for hooklups error
+	- Possible fix to hookups only attracting one pawn
+	- Fixed default hookup rate
+
 - 3/19/2020
 	- Meltup: "Update on Polyamory"
 	- Fixed slept in own bedroom thought for pawns with multiple partners.

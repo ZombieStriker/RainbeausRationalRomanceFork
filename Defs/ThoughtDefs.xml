@@ -14,8 +14,19 @@
 			</li>
 		</stages>
 	</ThoughtDef>
-
-
+  
+  <ThoughtDef>
+    <defName>SharedBed</defName>
+    <thoughtClass>Thought_SharedBed</thoughtClass>
+    <workerClass>ThoughtWorker_SharedBed</workerClass>
+    <stages>
+      <li>
+        <label>sharing bed</label>
+        <description>I have to share a bed with someone who I don't particularly want to.</description>
+      </li>
+    </stages>
+  </ThoughtDef>
+  
   <ThoughtDef>
 		<defName>RebuffedMyHookupAttempt</defName>
 		<thoughtClass>Thought_MemorySocial</thoughtClass>
@@ -68,6 +79,11 @@
 			<li>Polyamorous</li>
 		</requiredTraits>
 		<stages>
+      <li>
+        <label>not in a relationship</label>
+        <description>I feel so lonely.</description>
+        <baseMoodEffect>-5</baseMoodEffect>
+      </li>
 			<li>
 				<label>in a monogamous relationship</label>
 				<description>I wish my love wasn't limited to just one person.</description>
@@ -75,5 +91,26 @@
 			</li>
 		</stages>
 	</ThoughtDef>
-
+  <ThoughtDef>
+    <defName>SharedBedRRR</defName>
+    <workerClass>RationalRomance_Code.ThoughtWorker_SharedBedRRR</workerClass>
+    <stages>
+      <li>
+        <label>sharing my bed</label>
+        <description>I have to share a bed with someone who I don't particularly want to.</description>
+        <baseMoodEffect>-5</baseMoodEffect>
+      </li>
+      <li>
+        <label>sharing bed with partner</label>
+        <description>I have to share a bed with another member of my polycule. I love seeing them so happy.</description>
+        <baseMoodEffect>1</baseMoodEffect>
+      </li>
+      <li>
+        <label>with polycule</label>
+        <description>I am with the people I love the most!</description>
+        <baseMoodEffect>5</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+  
 </Defs>

@@ -1,16 +1,16 @@
 {
   "ExpandedNodes": [
     "",
-    "\\About",
+    "\\Defs",
+    "\\Languages",
+    "\\Languages\\English",
+    "\\Languages\\English\\Keyed",
+    "\\Patches",
     "\\Source",
     "\\Source\\Rainbeau's Rational Romance",
-    "\\Source\\Rainbeau's Rational Romance\\bin",
-    "\\Source\\Rainbeau's Rational Romance\\bin\\Release",
-    "\\Source\\Rainbeau's Rational Romance\\obj",
-    "\\Source\\Rainbeau's Rational Romance\\obj\\Debug",
-    "\\Source\\Rainbeau's Rational Romance\\obj\\Debug\\TempPE",
     "\\Source\\Rainbeau's Rational Romance\\obj\\Release",
     "\\Source\\Rainbeau's Rational Romance\\Properties"
   ],
-  "PreviewInSolutionExplorer": false
+  "SelectedNode": "\\Defs\\ThoughtDefs.xml",
+  "PreviewInSolutionExplorer": true
 }
