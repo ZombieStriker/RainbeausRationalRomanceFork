@@ -14,7 +14,7 @@
 			</li>
 		</stages>
 	</ThoughtDef>
-  
+
   <ThoughtDef>
     <defName>SharedBed</defName>
     <thoughtClass>Thought_SharedBed</thoughtClass>

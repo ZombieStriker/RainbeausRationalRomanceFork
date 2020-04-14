@@ -1,6 +1,9 @@
 ---------------------------------------------------------------------------------
   Changelog for "Rainbeau's Rational Romance"
 ---------------------------------------------------------------------------------
+- 4/14/2020
+	-Fixed Index error for pawns with dull bedrooms.
+
 - 4/13/2020
 	- Fixed commonality error 
 	- Fixed possible error with doing full map search

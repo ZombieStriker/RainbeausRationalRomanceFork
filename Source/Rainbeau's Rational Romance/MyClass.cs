@@ -1546,7 +1546,10 @@ namespace RationalRomance_Code
 							Thought_Memory mem = p.needs.mood.thoughts.memories.GetFirstMemoryOfDef(ThoughtDefOf.SleptInBedroom);
 							if (mem != null)
 								{
-								mem.SetForcedStage(__result.StageIndex);
+								if (mem.def.stages.Count < __result.StageIndex)
+									{
+									mem.SetForcedStage(__result.StageIndex);
+									}
 								}
 							}
 						__result = ThoughtState.Inactive;
@@ -1565,86 +1568,47 @@ namespace RationalRomance_Code
 		// CHANGE: Allowed for polyamory.
 		public static void Postfix(ref ThoughtState __result, Pawn p)
 			{
-			if (true)
-				{
-				__result = ThoughtState.Inactive;
-				return;
-				}
+			__result = ThoughtState.Inactive;
 
-			IEnumerable<Pawn> loveTree = SexualityUtilities.getAllLoverPawnsFirstRemoved(p);
-			bool hasStranger = false;
+			/*	IEnumerable<Pawn> loveTree = SexualityUtilities.getAllLoverPawnsFirstRemoved(p);
+				bool hasStranger = false;
 
-			//IEnumerable<Building_Bed> bed = from r in p.GetRoom().ContainedBeds where r.OwnersForReading.Contains(p) select r;
-			Building_Bed fbed = p.CurrentBed();
+				//IEnumerable<Building_Bed> bed = from r in p.GetRoom().ContainedBeds where r.OwnersForReading.Contains(p) select r;
+				Building_Bed fbed = p.CurrentBed();
 
-			if (fbed != null)
-				{
-				bool needsToCheck = fbed.OwnersForReading.Count > 1;
-				foreach (Pawn pawn in fbed.OwnersForReading)
+				if (fbed != null)
 					{
-					if (!loveTree.Contains(pawn) && pawn != p)
+					bool needsToCheck = fbed.OwnersForReading.Count > 1;
+					foreach (Pawn pawn in fbed.OwnersForReading)
 						{
-						hasStranger = true;
+						if (!loveTree.Contains(pawn) && pawn != p)
+							{
+							hasStranger = true;
+							}
+						}
+					if (needsToCheck)
+						{
+						if (!hasStranger)
+							{
+							__result = ThoughtState.ActiveAtStage(1);
+							Log.Message("Stage 0 " + p.Name);
+							}
+						else
+							{
+							__result = ThoughtState.ActiveAtStage(2);
+							Log.Message("Stage 1 " + p.Name);
+							}
 						}
 					}
-				if (needsToCheck)
+				else
 					{
-					if (!hasStranger)
-						{
-						__result = ThoughtState.ActiveAtStage(1);
-						Log.Message("Stage 0 " + p.Name);
-						}
-					else
-						{
-						__result = ThoughtState.ActiveAtStage(2);
-						Log.Message("Stage 1 " + p.Name);
-						}
+					//__result = ThoughtState.ActiveAtStage(1);
+					__result = ThoughtState.Inactive;
 					}
-				}
-			else
-				{
-				//__result = ThoughtState.ActiveAtStage(1);
-				__result = ThoughtState.Inactive;
-				}
+				}*/
 			}
 		}
 
-	/*public class Thought_SharedBedRRR: Thought_SharedBed
-		{
-		public override string LabelCap
-			{
-			//((Thought_SharedBed)null).LabelCap();
-			Log.Message(pawn.Name + " Test 1");
-			IEnumerable<Pawn> loveTree = SexualityUtilities.getAllLoverPawnsFirstRemoved(pawn);
-			bool hasStranger = false;
-
-			if (pawn.CurrentBed() != null)
-				{
-				bool needsToCheck = pawn.CurrentBed().OwnersForReading.Count > 1;
-				foreach (Pawn pawn2 in pawn.CurrentBed().OwnersForReading)
-					{
-					Log.Message("----pawn " + pawn2.Name + "  ." + (pawn.CurrentBed() == pawn2.CurrentBed()) + "  " + loveTree.Contains(pawn2));
-					if (!loveTree.Contains(pawn2) && pawn != pawn2)
-						{
-						Log.Message("------" + pawn.Name + " + " + pawn2.Name + " FAILED");
-						hasStranger = true;
-						}
-					}
-				if (needsToCheck)
-					{
-					if (!hasStranger)
-						{
-						//return 1;
-						}
-					else
-						{
-						//return -88;
-						}
-					}
-				}
-			return 0;
-			}
-		}*/
 
 	public class Thought_WantToSleepWithSpouseOrLoverRRR : Thought_WantToSleepWithSpouseOrLover
 		{
@@ -2718,6 +2682,10 @@ namespace RationalRomance_Code
 				return ThoughtState.Inactive;
 				}
 
+			if (p.CurrentBed() == null)
+				{
+				return ThoughtState.Inactive;
+				}
 
 			List<Pawn> lovers = new List<Pawn>();
 			List<DirectPawnRelation> directRelations = p.relations.DirectRelations;
@@ -2733,32 +2701,43 @@ namespace RationalRomance_Code
 			int otherPartners = 0;
 			bool stranger = false;
 
-			if (p.CurrentBed() == null)
+			if (lovers.Count < 1)
 				{
-				return ThoughtState.Inactive;
-				}
-			if (p.CurrentBed().OwnersForReading.Count > 1)
-				{
-				foreach (Pawn otherPawn in p.CurrentBed().OwnersForReading)
+				if (p.CurrentBed().OwnersForReading.Count > 1)
 					{
-					if (otherPawn == p)
-						continue;
-					if (!lovers.Contains(otherPawn))
+					foreach (Pawn otherPawn in p.CurrentBed().OwnersForReading)
 						{
-						IEnumerable<Pawn> partnerspartners = SexualityUtilities.getAllLoverPawnsFirstRemoved(p);
-						if (partnerspartners.Contains(otherPawn))
+						if (otherPawn == p)
+							continue;
+						stranger = true;
+						}
+					}
+				}
+			else
+				{
+				if (p.CurrentBed().OwnersForReading.Count > 1)
+					{
+					foreach (Pawn otherPawn in p.CurrentBed().OwnersForReading)
+						{
+						if (otherPawn == p)
+							continue;
+						if (!lovers.Contains(otherPawn))
 							{
-							otherPartners++;
+							IEnumerable<Pawn> partnerspartners = SexualityUtilities.getAllLoverPawnsFirstRemoved(p);
+							if (partnerspartners.Contains(otherPawn))
+								{
+								otherPartners++;
+								}
+							else
+								{
+								stranger = true;
+								break;
+								}
 							}
 						else
 							{
-							stranger = true;
-							break;
+							partnerCount++;
 							}
-						}
-					else
-						{
-						partnerCount++;
 						}
 					}
 				}
