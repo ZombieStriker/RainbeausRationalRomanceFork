@@ -82,7 +82,7 @@
       <li>
         <label>not in a relationship</label>
         <description>I feel so lonely.</description>
-        <baseMoodEffect>-5</baseMoodEffect>
+        <baseMoodEffect>-3</baseMoodEffect>
       </li>
 			<li>
 				<label>in a monogamous relationship</label>
@@ -102,7 +102,7 @@
       </li>
       <li>
         <label>sharing bed with partner</label>
-        <description>I have to share a bed with another member of my polycule. I love seeing them so happy.</description>
+        <description>I have to share a bed with another member of my polycule, but I love seeing my partner so happy.</description>
         <baseMoodEffect>1</baseMoodEffect>
       </li>
       <li>

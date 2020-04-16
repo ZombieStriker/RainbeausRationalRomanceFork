@@ -141,6 +141,11 @@ namespace RationalRomance_Code
 		public static TraitDef Straight;
 		}
 
+	public static class RRRRelationsDefsOf
+		{
+		public static PawnRelationDef Metamour;
+		}
+
 	public static class ExtraTraits
 		{
 
@@ -753,7 +758,10 @@ namespace RationalRomance_Code
 					{
 					pawn.relations.RemoveDirectRelation(PawnRelationDefOf.Lover, firstDirectRelationPawn);
 					pawn.relations.AddDirectRelation(PawnRelationDefOf.ExLover, firstDirectRelationPawn);
+					//SexualityUtilities.updateMetamours(pawn, firstDirectRelationPawn);
+					//SexualityUtilities.updateMetamours(firstDirectRelationPawn,pawn);
 					oldLoversAndFiances.Add(firstDirectRelationPawn);
+
 					}
 				else
 					{
@@ -766,6 +774,8 @@ namespace RationalRomance_Code
 						{
 						pawn.relations.RemoveDirectRelation(PawnRelationDefOf.Fiance, firstDirectRelationPawn1);
 						pawn.relations.AddDirectRelation(PawnRelationDefOf.ExLover, firstDirectRelationPawn1);
+						//SexualityUtilities.updateMetamours(pawn, firstDirectRelationPawn1);
+						//SexualityUtilities.updateMetamours(firstDirectRelationPawn1, pawn);
 						oldLoversAndFiances.Add(firstDirectRelationPawn1);
 						}
 					}
@@ -1096,6 +1106,8 @@ namespace RationalRomance_Code
 						{
 						pawn.relations.RemoveDirectRelation(PawnRelationDefOf.Spouse, spousePawn);
 						pawn.relations.AddDirectRelation(PawnRelationDefOf.ExSpouse, spousePawn);
+						//SexualityUtilities.updateMetamours(pawn,spousePawn);
+						//SexualityUtilities.updateMetamours(spousePawn,pawn);
 						}
 					}
 				return false;
@@ -2424,25 +2436,76 @@ namespace RationalRomance_Code
 		{
 
 
+		public static void updateMetamours(Pawn pawn)
+			{
+			IEnumerable<Pawn> partners = (from r in pawn.relations.PotentiallyRelatedPawns where LovePartnerRelationUtility.LovePartnerRelationExists(pawn, r) select r);
+			foreach (Pawn p in partners)
+				{
+				updateMetamours(pawn, p);
+				}
+			}
+		public static void updateMetamours(Pawn pawn, Pawn secondPawn)
+			{
+			IEnumerable<Pawn> partners = (from r in pawn.relations.PotentiallyRelatedPawns where LovePartnerRelationUtility.LovePartnerRelationExists(secondPawn, r) select r);
+			IEnumerable<Pawn> metamours = SexualityUtilities.getAllLoverPawnsFirstRemoved(pawn);
+			foreach (Pawn meta in partners)
+				{
+				if (!metamours.Contains(meta))
+					{
+					if (pawn.relations.GetDirectRelation(RRRRelationsDefsOf.Metamour, meta) != null)
+						{
+						pawn.relations.RemoveDirectRelation(RRRRelationsDefsOf.Metamour, meta);
+						meta.relations.RemoveDirectRelation(RRRRelationsDefsOf.Metamour, pawn);
+						}
+					}
+				else
+					{
+					if (pawn.relations.GetDirectRelation(RRRRelationsDefsOf.Metamour, meta) == null)
+						{
+						pawn.relations.AddDirectRelation(RRRRelationsDefsOf.Metamour, meta);
+						meta.relations.AddDirectRelation(RRRRelationsDefsOf.Metamour, pawn);
+						}
+					}
+				}
+			}
+
 		public static IEnumerable<Pawn> getAllLoverPawnsFirstRemoved(Pawn p)
 			{
 			//Log.Message("testfor " + p.Name);
+			List<Pawn> list = new List<Pawn>();
 			IEnumerable<Pawn> loveTree = (from r in p.relations.PotentiallyRelatedPawns where LovePartnerRelationUtility.LovePartnerRelationExists(p, r) select r);
 			foreach (Pawn newPawn in loveTree)
 				{
-				if (!loveTree.Contains(newPawn))
-					loveTree.AddItem(newPawn);
+				if (!list.Contains(newPawn))
+					{
+					list.Add(newPawn);
+					}
 				//Log.Message("--Hello " + newPawn.Name);
 				IEnumerable<Pawn> loveTree2 = (from r in newPawn.relations.PotentiallyRelatedPawns where LovePartnerRelationUtility.LovePartnerRelationExists(newPawn, r) select r);
 				foreach (Pawn secondPawn in loveTree2)
 					{
+					if (secondPawn == p)
+						continue;
 					//Log.Message("-------"+secondPawn.Name);
-					if (!loveTree.Contains(secondPawn))
-						loveTree.AddItem(secondPawn);
+					if (!list.Contains(secondPawn))
+						{
+						//if(p.relations.GetDirectRelation(PawnRelationDefOf.Spouse, newPawn) != null || p.relations.GetDirectRelation(PawnRelationDefOf.Fiance, newPawn) != null)
+						//Make sure the two pawns are married first in order to be a meta
+						//	if (p.relations.GetDirectRelation(RRRRelationsDefsOf.Metamour, secondPawn) == null &&
+						//	p.relations.GetDirectRelation(PawnRelationDefOf.Lover, secondPawn) == null &&
+						//	p.relations.GetDirectRelation(PawnRelationDefOf.Spouse, secondPawn) == null &&
+						//	p.relations.GetDirectRelation(PawnRelationDefOf.Fiance, secondPawn) == null 
+						//	)
+						//	{
+						//	//Pawn is a meta, but not given a relationship tag
+						//	p.relations.AddDirectRelation(RRRRelationsDefsOf.Metamour, secondPawn);
+						//	}
+						list.Add(secondPawn);
+						}
 					}
-
 				}
-			return loveTree;
+
+			return list;
 			}
 
 		public static Pawn FindAttractivePawn(Pawn p1)
@@ -2696,6 +2759,7 @@ namespace RationalRomance_Code
 					lovers.Add(rel.otherPawn);
 					}
 				}
+			IEnumerable<Pawn> partnerspartners = SexualityUtilities.getAllLoverPawnsFirstRemoved(p);
 
 			int partnerCount = 0;
 			int otherPartners = 0;
@@ -2723,7 +2787,6 @@ namespace RationalRomance_Code
 							continue;
 						if (!lovers.Contains(otherPawn))
 							{
-							IEnumerable<Pawn> partnerspartners = SexualityUtilities.getAllLoverPawnsFirstRemoved(p);
 							if (partnerspartners.Contains(otherPawn))
 								{
 								otherPartners++;
@@ -2731,7 +2794,6 @@ namespace RationalRomance_Code
 							else
 								{
 								stranger = true;
-								break;
 								}
 							}
 						else
@@ -2742,17 +2804,23 @@ namespace RationalRomance_Code
 					}
 				}
 
-			if (stranger && partnerCount == 0)
+			if (stranger)
 				{
+				//Stranger bed
 				return ThoughtState.ActiveAtStage(0);
 				}
-			else if (partnerCount > 1)
+			else
 				{
-				return ThoughtState.ActiveAtStage(2);
-				}
-			else if (partnerCount > 0 && otherPartners > 0)
-				{
-				return ThoughtState.ActiveAtStage(1);
+				if (partnerCount > 1)
+					{
+					//Polycule Bed
+					return ThoughtState.ActiveAtStage(2);
+					}
+				if (partnerCount > 0 && otherPartners > 0)
+					{
+					//Partner of Polycule Bed
+					return ThoughtState.ActiveAtStage(1);
+					}
 				}
 
 			return ThoughtState.Inactive;

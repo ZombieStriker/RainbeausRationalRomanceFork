@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<Defs>
+  <!--PawnRelationDef>
+		<defName>Metamour</defName>
+		<label>Metamour</label>
+		<labelFemale>Metamour</labelFemale>
+		<importance>195</importance>
+    <!- - diedThought>MyMetamourDied</diedThought>
+		<diedThoughtFemale>MyMetamourDied</diedThoughtFemale>
+		<killedThought>KilledMyMetamour</killedThought>
+		<killedThoughtFemale>KilledMyMetamour</killedThoughtFemale>
+		<soldThoughts>
+			<li>SoldMyLovedOne</li>
+		</soldThoughts - ->
+		<opinionOffset>10</opinionOffset>
+		<generationChanceFactor>0.0</generationChanceFactor>
+		<incestOpinionOffset>0</incestOpinionOffset>
+		<implied>false</implied>
+		<familyByBloodRelation>false</familyByBloodRelation>
+	</PawnRelationDef-->
+
+
+
+</Defs>
