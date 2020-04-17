@@ -1,6 +1,9 @@
 ---------------------------------------------------------------------------------
   Changelog for "Rainbeau's Rational Romance"
 ---------------------------------------------------------------------------------
+- 4/17/2020
+	- Possible fix for polycule bed only occuring when pawns are in bed.
+
 - 4/16/2020
 	- Fixed thought for pawns sleeping next to lover's other partners in polycules
 

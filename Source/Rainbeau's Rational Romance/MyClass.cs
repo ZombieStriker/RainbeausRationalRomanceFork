@@ -1446,9 +1446,9 @@ namespace RationalRomance_Code
 			{
 			if (__result.StageIndex != ThoughtState.Inactive.StageIndex)
 				{
-				if (p.CurrentBed() != null && p.CurrentBed().GetRoom() != null)
+				if (p.ownership.OwnedBed != null)
 					{
-					DirectPawnRelation directPawnRelation = LovePartnerRelationUtility.ExistingMostLikedLovePartnerRel(p, false);
+					//DirectPawnRelation directPawnRelation = LovePartnerRelationUtility.ExistingMostLikedLovePartnerRel(p, false);
 					IEnumerable<Pawn> partners = (from r in p.relations.PotentiallyRelatedPawns where LovePartnerRelationUtility.LovePartnerRelationExists(p, r) select r);
 					IEnumerable<Pawn> partnersInBed = (from r in partners where p.ownership.OwnedBed.OwnersForReading.Contains(r) select r);
 					bool multiplePartners = partners.Count() > 1;
@@ -1468,9 +1468,8 @@ namespace RationalRomance_Code
 
 					if (p.story.traits.HasTrait(RRRTraitDefOf.Polyamorous))
 						{
-
-						if (p.CurrentBed() != null && p.CurrentBed().GetRoom() != null)
-							foreach (Building_Bed bed in p.CurrentBed().GetRoom().ContainedBeds)
+						if (p.ownership.OwnedBed.GetRoom() != null) {
+							foreach (Building_Bed bed in p.ownership.OwnedBed.GetRoom().ContainedBeds)
 								{
 								foreach (Pawn pawn in bed.OwnersForReading)
 									{
@@ -1485,6 +1484,7 @@ namespace RationalRomance_Code
 									{
 									break;
 									}
+								}
 								}
 						}
 					}
@@ -1538,8 +1538,8 @@ namespace RationalRomance_Code
 			{
 			IEnumerable<Pawn> loveTree = SexualityUtilities.getAllLoverPawnsFirstRemoved(p);
 			bool hasStranger = false;
-			if (p.CurrentBed() != null && p.CurrentBed().GetRoom() != null)
-				foreach (Building_Bed bed in p.CurrentBed().GetRoom().ContainedBeds)
+			if (p.ownership.OwnedBed != null && p.ownership.OwnedBed.GetRoom() != null)
+				foreach (Building_Bed bed in p.ownership.OwnedBed.GetRoom().ContainedBeds)
 					{
 					foreach (Pawn pawn in bed.OwnersForReading)
 						{
@@ -2745,7 +2745,7 @@ namespace RationalRomance_Code
 				return ThoughtState.Inactive;
 				}
 
-			if (p.CurrentBed() == null)
+			if (p.ownership.OwnedBed == null)
 				{
 				return ThoughtState.Inactive;
 				}
@@ -2767,9 +2767,9 @@ namespace RationalRomance_Code
 
 			if (lovers.Count < 1)
 				{
-				if (p.CurrentBed().OwnersForReading.Count > 1)
+				if (p.ownership.OwnedBed.OwnersForReading.Count > 1)
 					{
-					foreach (Pawn otherPawn in p.CurrentBed().OwnersForReading)
+					foreach (Pawn otherPawn in p.ownership.OwnedBed.OwnersForReading)
 						{
 						if (otherPawn == p)
 							continue;
@@ -2779,9 +2779,9 @@ namespace RationalRomance_Code
 				}
 			else
 				{
-				if (p.CurrentBed().OwnersForReading.Count > 1)
+				if (p.ownership.OwnedBed.OwnersForReading.Count > 1)
 					{
-					foreach (Pawn otherPawn in p.CurrentBed().OwnersForReading)
+					foreach (Pawn otherPawn in p.ownership.OwnedBed.OwnersForReading)
 						{
 						if (otherPawn == p)
 							continue;
