@@ -18,6 +18,15 @@
 	
 	<RRR.DateRate>Base Rate at Which Pawns Will Propose Dates:</RRR.DateRate>
 	<RRR.HookupRate>Base Rate at Which Pawns Will Propose Hookups:</RRR.HookupRate>
-  <RRR.BigotCorrectionRate>Base Rate at Which Misogynist/Misanderist Pawns Wont be Attracted to Just the Gender They Hate:</RRR.BigotCorrectionRate>
-	
+  <RRR.BigotCorrectionRate>Misogynist/Misanderist Hated Gender Attration Rate:</RRR.BigotCorrectionRate>
+  <RRR.BigotCorrectionRateTip>This slider determines how likely pawns are to be romantically interested in pawns of of the gender that they hate. If set to 100%, the pawn's oreintation will no longer be towards the gender they hate.</RRR.BigotCorrectionRateTip>
+
+  <RRR.PolyamorousDebuff>Enable Polyamorous in Monogamous Relationship Debuff:</RRR.PolyamorousDebuff>
+  <RRR.PolyamorousDebuffTip>This determines whether the polyamorous pawn will get a mood debuff if they are in a monogamous relationship.</RRR.PolyamorousDebuffTip>
+  
+  <RRR.GenerateSexualities>Give all pawns a sexuality by default:</RRR.GenerateSexualities>
+  <RRR.GenerateSexualitiesTip>This determines whether RR will give sexualities to pawns. Other traits like Polyamorous, Faithful, and Philanderer can still be generated.</RRR.GenerateSexualitiesTip>
+
+
+
 </LanguageData>

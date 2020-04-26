@@ -38,10 +38,14 @@ namespace RationalRomance_Code
 		public float dateRate = 100f;
 		public float hookupRate = 100f;
 		public float BigotCorrectionRate = 50f;
+
+		public bool polyamorousDebuff = true;
+		public bool generateSexualities = true;
+
 		public void DoWindowContents(Rect canvas)
 			{
 			Listing_Standard list = new Listing_Standard();
-			list.ColumnWidth = canvas.width;
+			list.ColumnWidth = (int)(canvas.width / 2.1);
 			list.Begin(canvas);
 			list.Gap(2);
 			Text.Font = GameFont.Tiny;
@@ -71,7 +75,8 @@ namespace RationalRomance_Code
 			list.Gap();
 			asexualChance = 100 - (int)straightChance - (int)bisexualChance - (int)gayChance;
 			list.Label("RRR.AsexualChance".Translate() + "  " + asexualChance + "%");
-			list.Gap(48);
+			list.Gap(40);
+			list.GapLine();
 			list.Label("RRR.PolyamoryChance".Translate() + "  " + (int)polyChance + "%", -1f, "RRR.PolyamoryChanceTip".Translate());
 			polyChance = list.Slider(polyChance, 0f, 100.99f);
 			list.Gap(2);
@@ -82,11 +87,31 @@ namespace RationalRomance_Code
 			list.Label("RRR.HookupRate".Translate() + "  " + (int)hookupRate + "%");
 			hookupRate = list.Slider(hookupRate, 0f, 200.99f);
 			list.Gap(2);
-			list.Label("RRR.BigotCorrectionRate".Translate() + "  " + (int)BigotCorrectionRate + "%");
+			list.Label("RRR.BigotCorrectionRate".Translate() + "  " + (int)BigotCorrectionRate + "%", -1f, "RRR.BigotCorrectionRateTip".Translate());
 			BigotCorrectionRate = list.Slider(BigotCorrectionRate, 0f, 100.99f);
 			list.Gap(2);
 			list.Label("RRR.AlienLoveChance".Translate() + "  " + (int)alienLoveChance + "%", -1f, "RRR.AlienLoveChanceTip".Translate());
 			alienLoveChance = list.Slider(alienLoveChance, 0f, 100.99f);
+			list.Gap(2);
+			list.CheckboxLabeled("RRR.PolyamorousDebuff".Translate(), ref polyamorousDebuff, "RRR.PolyamorousDebuffTip".Translate());
+			list.Gap(2);
+			list.CheckboxLabeled("RRR.GenerateSexualities".Translate(), ref generateSexualities, "RRR.GenerateSexualitiesTip".Translate());
+
+			list.Gap(100);
+			if (list.ButtonText("Reset"))
+				{
+				asexualChance = 10f;
+				bisexualChance = 50f;
+				gayChance = 20f;
+				straightChance = 20f;
+				polyChance = 15f;
+				alienLoveChance = 33f;
+				dateRate = 100f;
+				hookupRate = 100f;
+				BigotCorrectionRate = 50f;
+				polyamorousDebuff = true;
+				generateSexualities = true;
+				}
 			list.End();
 			}
 		public override void ExposeData()
@@ -101,6 +126,7 @@ namespace RationalRomance_Code
 			Scribe_Values.Look(ref dateRate, "dateRate", 100.0f);
 			Scribe_Values.Look(ref hookupRate, "hookupRate", 100.0f);
 			Scribe_Values.Look(ref BigotCorrectionRate, "BigotCorrectionRate", 50.0f);
+			Scribe_Values.Look(ref polyamorousDebuff, "polyamorousDebuff", true);
 			}
 		}
 
@@ -171,144 +197,147 @@ namespace RationalRomance_Code
 
 			if (hasSexualTrait(pawn))
 				return;
-			if (pawn.kindDef.race.defName.ToLower().Contains("droid") && !AndroidsCompatibility.IsAndroid(pawn))
+			if (Controller.Settings.generateSexualities)
 				{
-				pawn.story.traits.GainTrait(new Trait(TraitDefOf.Asexual, 0, false));
-				return;
-				}
-
-			bool likesOwn = false;
-			bool likesOther = false;
-
-			if (orientation < (Controller.Settings.asexualChance / 100))
-				{
-				if (LovePartnerRelationUtility.HasAnyLovePartnerOfTheOppositeGender(pawn) || LovePartnerRelationUtility.HasAnyExLovePartnerOfTheOppositeGender(pawn))
-					{
-					likesOther = true;
-					}
-				if (LovePartnerRelationUtility.HasAnyLovePartnerOfTheSameGender(pawn) || LovePartnerRelationUtility.HasAnyExLovePartnerOfTheSameGender(pawn))
-					{
-					likesOwn = true;
-					}
-				if (pawn.story.traits.HasTrait(RRRTraitDefOf.Philanderer))
-					{
-					likesOther = true;
-					likesOwn = true;
-					}
-				else
+				if (pawn.kindDef.race.defName.ToLower().Contains("droid") && !AndroidsCompatibility.IsAndroid(pawn))
 					{
 					pawn.story.traits.GainTrait(new Trait(TraitDefOf.Asexual, 0, false));
 					return;
 					}
-				}
-			if (!hasSexualTrait(pawn))
-				{
 
-				if (LovePartnerRelationUtility.HasAnyLovePartnerOfTheOppositeGender(pawn) || LovePartnerRelationUtility.HasAnyExLovePartnerOfTheOppositeGender(pawn))
-					{
-					likesOther = true;
-					}
-				if (LovePartnerRelationUtility.HasAnyLovePartnerOfTheSameGender(pawn) || LovePartnerRelationUtility.HasAnyExLovePartnerOfTheSameGender(pawn))
-					{
-					likesOwn = true;
-					}
+				bool likesOwn = false;
+				bool likesOther = false;
 
-				bool hatesOwnGender = false;
-				bool hatesOtherGender = false;
-				if (pawn.story.traits.HasTrait(TraitDefOf.DislikesMen))
+				if (orientation < (Controller.Settings.asexualChance / 100) && Controller.Settings.asexualChance >= 1)
 					{
-					if (pawn.gender == Gender.Male)
+					if (LovePartnerRelationUtility.HasAnyLovePartnerOfTheOppositeGender(pawn) || LovePartnerRelationUtility.HasAnyExLovePartnerOfTheOppositeGender(pawn))
 						{
-						hatesOwnGender = true;
+						likesOther = true;
+						}
+					if (LovePartnerRelationUtility.HasAnyLovePartnerOfTheSameGender(pawn) || LovePartnerRelationUtility.HasAnyExLovePartnerOfTheSameGender(pawn))
+						{
+						likesOwn = true;
+						}
+					if (pawn.story.traits.HasTrait(RRRTraitDefOf.Philanderer))
+						{
+						likesOther = true;
+						likesOwn = true;
 						}
 					else
 						{
-						hatesOtherGender = true;
+						pawn.story.traits.GainTrait(new Trait(TraitDefOf.Asexual, 0, false));
+						return;
 						}
 					}
-				if (pawn.story.traits.HasTrait(TraitDefOf.DislikesWomen))
+				if (!hasSexualTrait(pawn))
 					{
-					if (pawn.gender == Gender.Female)
-						{
-						hatesOwnGender = true;
-						}
-					else
-						{
-						hatesOtherGender = true;
-						}
-					}
 
-				else if (orientation < ((Controller.Settings.asexualChance + Controller.Settings.bisexualChance) / 100))
-					{
-					likesOther = true;
-					likesOwn = true;
-					//bi
-					}
-				else if (orientation < ((Controller.Settings.asexualChance + Controller.Settings.bisexualChance + Controller.Settings.gayChance) / 100))
-					{
-					//Makes it so misogynists and misandrists are less likely to have to romance the "hated sex".
-					if (hatesOwnGender && Rand.Value < Controller.Settings.BigotCorrectionRate)
+					if (LovePartnerRelationUtility.HasAnyLovePartnerOfTheOppositeGender(pawn) || LovePartnerRelationUtility.HasAnyExLovePartnerOfTheOppositeGender(pawn))
 						{
-						if (Rand.Value < 100F - Controller.Settings.straightChance)
-							{
-							likesOther = true;
-							//Likes own too
-							}
-						else
-							{
-							likesOther = true;
-							likesOwn = false;
-							}
+						likesOther = true;
 						}
-					else
+					if (LovePartnerRelationUtility.HasAnyLovePartnerOfTheSameGender(pawn) || LovePartnerRelationUtility.HasAnyExLovePartnerOfTheSameGender(pawn))
 						{
 						likesOwn = true;
 						}
 
-					}
-				else
-					{
-					//Makes it so misogynists and misandrists are less likely to have to romance the "hated sex".
-					if (hatesOtherGender && Rand.Value < Controller.Settings.BigotCorrectionRate)
+					bool hatesOwnGender = false;
+					bool hatesOtherGender = false;
+					if (pawn.story.traits.HasTrait(TraitDefOf.DislikesMen))
 						{
-						if (Rand.Value < 100F - Controller.Settings.gayChance)
+						if (pawn.gender == Gender.Male)
 							{
-							likesOwn = true;
-							//Likes other too.
+							hatesOwnGender = true;
+							}
+						else
+							{
+							hatesOtherGender = true;
+							}
+						}
+					if (pawn.story.traits.HasTrait(TraitDefOf.DislikesWomen))
+						{
+						if (pawn.gender == Gender.Female)
+							{
+							hatesOwnGender = true;
+							}
+						else
+							{
+							hatesOtherGender = true;
+							}
+						}
+
+					else if (orientation < ((Controller.Settings.asexualChance + Controller.Settings.bisexualChance) / 100) && Controller.Settings.bisexualChance >= 1)
+						{
+						likesOther = true;
+						likesOwn = true;
+						//bi
+						}
+					else if (orientation < ((Controller.Settings.asexualChance + Controller.Settings.bisexualChance + Controller.Settings.gayChance) / 100) && Controller.Settings.gayChance >= 1)
+						{
+						//Makes it so misogynists and misandrists are less likely to have to romance the "hated sex".
+						if (hatesOwnGender && Rand.Value < Controller.Settings.BigotCorrectionRate)
+							{
+							if (Rand.Value < 100F - Controller.Settings.straightChance)
+								{
+								likesOther = true;
+								//Likes own too
+								}
+							else
+								{
+								likesOther = true;
+								likesOwn = false;
+								}
 							}
 						else
 							{
 							likesOwn = true;
-							likesOther = false;
 							}
+
 						}
 					else
 						{
-						likesOther = true;
+						//Makes it so misogynists and misandrists are less likely to have to romance the "hated sex".
+						if (hatesOtherGender && Rand.Value < Controller.Settings.BigotCorrectionRate)
+							{
+							if (Rand.Value < 100F - Controller.Settings.gayChance)
+								{
+								likesOwn = true;
+								//Likes other too.
+								}
+							else
+								{
+								likesOwn = true;
+								likesOther = false;
+								}
+							}
+						else
+							{
+							likesOther = true;
+							}
 						}
-					}
 
-				if (likesOther && likesOwn)
-					{
-					pawn.story.traits.GainTrait(new Trait(TraitDefOf.Bisexual, 0, false));
-					}
-				else if (likesOther && !likesOwn)
-					{
-					pawn.story.traits.GainTrait(new Trait(RRRTraitDefOf.Straight, 0, false));
-					}
-				else if (!likesOther && likesOwn)
-					{
-					pawn.story.traits.GainTrait(new Trait(TraitDefOf.Gay, 0, false));
-					}
-				else
-					{
-					pawn.story.traits.GainTrait(new Trait(TraitDefOf.Asexual, 0, false));
+					if (likesOther && likesOwn)
+						{
+						pawn.story.traits.GainTrait(new Trait(TraitDefOf.Bisexual, 0, false));
+						}
+					else if (likesOther && !likesOwn)
+						{
+						pawn.story.traits.GainTrait(new Trait(RRRTraitDefOf.Straight, 0, false));
+						}
+					else if (!likesOther && likesOwn)
+						{
+						pawn.story.traits.GainTrait(new Trait(TraitDefOf.Gay, 0, false));
+						}
+					else
+						{
+						pawn.story.traits.GainTrait(new Trait(TraitDefOf.Asexual, 0, false));
+						}
 					}
 				}
 
 			if (!pawn.story.traits.HasTrait(TraitDefOf.Asexual) && !pawn.story.traits.HasTrait(RRRTraitDefOf.Polyamorous))
 				{
-				if (Rand.Value < (Controller.Settings.polyChance / 100))
+				if (Rand.Value < (Controller.Settings.polyChance / 100) && Controller.Settings.polyChance > 1)
 					{
 					pawn.story.traits.GainTrait(new Trait(RRRTraitDefOf.Polyamorous, 0, false));
 					}
@@ -1468,7 +1497,8 @@ namespace RationalRomance_Code
 
 					if (p.story.traits.HasTrait(RRRTraitDefOf.Polyamorous))
 						{
-						if (p.ownership.OwnedBed.GetRoom() != null) {
+						if (p.ownership.OwnedBed.GetRoom() != null)
+							{
 							foreach (Building_Bed bed in p.ownership.OwnedBed.GetRoom().ContainedBeds)
 								{
 								foreach (Pawn pawn in bed.OwnersForReading)
@@ -1485,7 +1515,7 @@ namespace RationalRomance_Code
 									break;
 									}
 								}
-								}
+							}
 						}
 					}
 
@@ -1550,25 +1580,33 @@ namespace RationalRomance_Code
 							}
 
 						}
-					if (!hasStranger)
-						{
-						if (p.needs.mood.thoughts.memories.GetFirstMemoryOfDef(ThoughtDefOf.SleptInBedroom) == null)
-							{
-							p.needs.mood.thoughts.memories.TryGainMemory(ThoughtDefOf.SleptInBedroom);
-							Thought_Memory mem = p.needs.mood.thoughts.memories.GetFirstMemoryOfDef(ThoughtDefOf.SleptInBedroom);
-							if (mem != null)
-								{
-								if (mem.def.stages.Count < __result.StageIndex)
-									{
-									mem.SetForcedStage(__result.StageIndex);
-									}
-								}
-							}
-						__result = ThoughtState.Inactive;
-						p.needs.mood.thoughts.memories.RemoveMemoriesOfDef(ThoughtDefOf.SleptInBarracks);
-						break;
-						}
 					}
+			if (!hasStranger)
+				{
+				if (p.IsPrisoner)
+					return;
+				Thought_Memory memB = p.needs.mood.thoughts.memories.GetFirstMemoryOfDef(ThoughtDefOf.SleptInBarracks);
+				if (memB != null)
+					{
+					if (p.needs.mood.thoughts.memories.GetFirstMemoryOfDef(ThoughtDefOf.SleptInBedroom) == null)
+						{
+						p.needs.mood.thoughts.memories.TryGainMemory(ThoughtDefOf.SleptInBedroom);
+						}
+					Thought_Memory mem = p.needs.mood.thoughts.memories.GetFirstMemoryOfDef(ThoughtDefOf.SleptInBedroom);
+					if (mem != null)
+						{
+						Log.Message(p.Name + " :" + mem.def.stages.Count + " || " + memB.def.stages.Count);
+						if (mem.def.stages.Count >= memB.CurStageIndex)
+							{
+							mem.SetForcedStage(memB.CurStageIndex);
+							}
+						}
+
+					__result = ThoughtState.Inactive;
+					p.needs.mood.thoughts.memories.RemoveMemoriesOfDef(ThoughtDefOf.SleptInBarracks);
+					}
+				}
+
 			}
 		}
 
@@ -2832,6 +2870,8 @@ namespace RationalRomance_Code
 		{
 		protected override ThoughtState CurrentStateInternal(Pawn p)
 			{
+			if (!Controller.Settings.polyamorousDebuff)
+				return ThoughtState.Inactive;
 			if (!p.Spawned)
 				return ThoughtState.Inactive;
 			if (!p.RaceProps.Humanlike)

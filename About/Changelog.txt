@@ -1,6 +1,16 @@
 ---------------------------------------------------------------------------------
   Changelog for "Rainbeau's Rational Romance"
 ---------------------------------------------------------------------------------
+- 4/24/2020
+	- Added Tooltip for bigot slider.
+	- Possible fix for sexualities still appearing when set to 0.
+	- Added Reset button to mod options
+	- Added Enable Polyamourous in Monogamous Relationship checkbox to disable this debuff.
+	- Added option to disable RR from giving pawns sexualities.
+
+- 4/21/2020
+	- Fixed mood stage setting to aweful instead of the pawn's actual bedroom stat.
+
 - 4/17/2020
 	- Possible fix for polycule bed only occuring when pawns are in bed.
 
