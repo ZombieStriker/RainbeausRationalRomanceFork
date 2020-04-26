@@ -1,7 +1,7 @@
 {
   "ExpandedNodes": [
     "",
-    "\\Assemblies",
+    "\\About",
     "\\Defs",
     "\\Languages",
     "\\Languages\\English",
@@ -11,6 +11,6 @@
     "\\Source\\Rainbeau's Rational Romance",
     "\\Source\\Rainbeau's Rational Romance\\Properties"
   ],
-  "SelectedNode": "\\Defs\\Traits.xml",
+  "SelectedNode": "\\Source\\Rainbeau's Rational Romance\\MyClass.cs",
   "PreviewInSolutionExplorer": true
 }

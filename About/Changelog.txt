@@ -1,6 +1,10 @@
 ---------------------------------------------------------------------------------
   Changelog for "Rainbeau's Rational Romance"
 ---------------------------------------------------------------------------------
+- 4/26/2020
+	- Fix for settings staying across reloads
+	- Added sliders for chance for polyamorous pawns to look for new partners.
+
 - 4/24/2020
 	- Added Tooltip for bigot slider.
 	- Possible fix for sexualities still appearing when set to 0.

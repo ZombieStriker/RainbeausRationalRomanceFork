@@ -106,8 +106,22 @@
         <baseMoodEffect>1</baseMoodEffect>
       </li>
       <li>
-        <label>with polycule</label>
+        <label>sleeping with polycule</label>
         <description>I am with the people I love the most!</description>
+        <baseMoodEffect>5</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+  
+  <ThoughtDef>
+    <defName>NewRelationshipEnergy</defName>
+    <durationDays>7</durationDays>
+    <stackLimit>12</stackLimit>
+    <stackedEffectMultiplier>0.5</stackedEffectMultiplier>
+    <stages>
+      <li>
+        <label>new-relationship-energy</label>
+        <description>I just found a new lover, {0}, and it is so exciting!</description>
         <baseMoodEffect>5</baseMoodEffect>
       </li>
     </stages>

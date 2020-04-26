@@ -42,6 +42,9 @@ namespace RationalRomance_Code
 		public bool polyamorousDebuff = true;
 		public bool generateSexualities = true;
 
+		public float polyamorousNewPartnerChanceCoefficient = 1f;
+		public float polyamorousLoverAttachmentCoefficient = 1f;
+
 		public void DoWindowContents(Rect canvas)
 			{
 			Listing_Standard list = new Listing_Standard();
@@ -97,6 +100,15 @@ namespace RationalRomance_Code
 			list.Gap(2);
 			list.CheckboxLabeled("RRR.GenerateSexualities".Translate(), ref generateSexualities, "RRR.GenerateSexualitiesTip".Translate());
 
+
+			list.Gap(2);
+			list.Label("RRR.PolyamorousNewPartnerChance".Translate() + "  " + Math.Round(polyamorousNewPartnerChanceCoefficient,1) + ".", -1f, "RRR.PolyamorousNewPartnerChanceTip".Translate());
+			polyamorousNewPartnerChanceCoefficient = list.Slider(polyamorousNewPartnerChanceCoefficient, -2.99f, 2.99f);
+			list.Gap(2);
+			list.Label("RRR.polyamorousLoverAttachment".Translate() + "  " + Math.Round(polyamorousLoverAttachmentCoefficient,1) + ".", -1f, "RRR.polyamorousLoverAttachmentTip".Translate());
+			polyamorousLoverAttachmentCoefficient = list.Slider(polyamorousLoverAttachmentCoefficient, 0, 2.99f);
+
+
 			list.Gap(100);
 			if (list.ButtonText("Reset"))
 				{
@@ -111,6 +123,8 @@ namespace RationalRomance_Code
 				BigotCorrectionRate = 50f;
 				polyamorousDebuff = true;
 				generateSexualities = true;
+				polyamorousLoverAttachmentCoefficient = 1;
+				polyamorousNewPartnerChanceCoefficient = 1;
 				}
 			list.End();
 			}
@@ -127,6 +141,9 @@ namespace RationalRomance_Code
 			Scribe_Values.Look(ref hookupRate, "hookupRate", 100.0f);
 			Scribe_Values.Look(ref BigotCorrectionRate, "BigotCorrectionRate", 50.0f);
 			Scribe_Values.Look(ref polyamorousDebuff, "polyamorousDebuff", true);
+			Scribe_Values.Look(ref generateSexualities, "generateSexualities", true);
+			Scribe_Values.Look(ref polyamorousLoverAttachmentCoefficient, "polyamorousLoverAttachmentCoefficient", 1);
+			Scribe_Values.Look(ref polyamorousNewPartnerChanceCoefficient, "polyamorousNewPartnerChanceCoefficient", 1);
 			}
 		}
 
@@ -156,6 +173,7 @@ namespace RationalRomance_Code
 		public static ThoughtDef FailedHookupAttemptOnMe;
 		public static ThoughtDef FeelingHarassed;
 		public static ThoughtDef RebuffedMyHookupAttempt;
+		public static ThoughtDef NewRelationshipEnergy;
 		}
 
 	[DefOf]
@@ -193,7 +211,9 @@ namespace RationalRomance_Code
 		public static void AssignOrientation(Pawn pawn)
 			{
 			float orientation = Rand.Value;
-			if (pawn.gender == Gender.None) { return; }
+			if (pawn.gender == Gender.None) { 
+				return; 
+			}
 
 			if (hasSexualTrait(pawn))
 				return;
@@ -901,7 +921,7 @@ namespace RationalRomance_Code
 							}
 						else
 							{
-							cheatChance = Mathf.InverseLerp(50f, -50f, opinionOfPartner);
+							cheatChance = Mathf.InverseLerp(25f + (25*Controller.Settings.polyamorousLoverAttachmentCoefficient), -50f + (25*Controller.Settings.polyamorousNewPartnerChanceCoefficient) , opinionOfPartner);
 							}
 						if (initiator.story.traits.HasTrait(RRRTraitDefOf.Faithful))
 							{
@@ -1151,7 +1171,7 @@ namespace RationalRomance_Code
 		// CHANGE: Updated with new orientation options.
 		public static bool Prefix(Pawn generated, Pawn other, PawnGenerationRequest request, bool ex, ref float __result)
 			{
-			if (generated.ageTracker.AgeBiologicalYearsFloat < 14f)
+				if (generated.ageTracker.AgeBiologicalYearsFloat < 14f)
 				{
 				__result = 0f;
 				return false;
@@ -1281,16 +1301,12 @@ namespace RationalRomance_Code
 				tempTrait = pawn.story.traits.allTraits[i];
 				if (tempTrait.Label.Equals("Asexual"))
 					break;
-
 				if (tempTrait.Label.Equals("Bisexual"))
 					break;
-
 				if (tempTrait.Label.Equals("Gay"))
 					break;
-
 				if (tempTrait.Label.Equals("Straight"))
 					break;
-
 				}
 			if (tempTrait != null)
 				{
@@ -1611,6 +1627,20 @@ namespace RationalRomance_Code
 		}
 
 
+	//PawnRelationWorker_Lover
+
+
+	/*[HarmonyPatch(typeof(PawnRelationWorker_Lover), "OnRelationCreated")]
+	public static class PawnRelationWorker_OnRelationCreated
+		{
+		public static void Postfix(Pawn firstPawn, Pawn secondPawn)
+			{
+			//((PawnRelationWorker_Lover)null).OnRelationCreated
+			Log.Message("RR ===             NEW RELATIONSHIP FEELS");
+			secondPawn.needs.mood.thoughts.memories.TryGainMemory(RRRThoughtDefOf.NewRelationshipEnergy, firstPawn);
+			firstPawn.needs.mood.thoughts.memories.TryGainMemory(RRRThoughtDefOf.NewRelationshipEnergy, secondPawn);
+			}
+		}*/
 
 	[HarmonyPatch(typeof(ThoughtWorker_SharedBed), "CurrentStateInternal")]
 	public static class ThoughtWorker_SharedBed_CurrentStateInternal
@@ -1619,43 +1649,6 @@ namespace RationalRomance_Code
 		public static void Postfix(ref ThoughtState __result, Pawn p)
 			{
 			__result = ThoughtState.Inactive;
-
-			/*	IEnumerable<Pawn> loveTree = SexualityUtilities.getAllLoverPawnsFirstRemoved(p);
-				bool hasStranger = false;
-
-				//IEnumerable<Building_Bed> bed = from r in p.GetRoom().ContainedBeds where r.OwnersForReading.Contains(p) select r;
-				Building_Bed fbed = p.CurrentBed();
-
-				if (fbed != null)
-					{
-					bool needsToCheck = fbed.OwnersForReading.Count > 1;
-					foreach (Pawn pawn in fbed.OwnersForReading)
-						{
-						if (!loveTree.Contains(pawn) && pawn != p)
-							{
-							hasStranger = true;
-							}
-						}
-					if (needsToCheck)
-						{
-						if (!hasStranger)
-							{
-							__result = ThoughtState.ActiveAtStage(1);
-							Log.Message("Stage 0 " + p.Name);
-							}
-						else
-							{
-							__result = ThoughtState.ActiveAtStage(2);
-							Log.Message("Stage 1 " + p.Name);
-							}
-						}
-					}
-				else
-					{
-					//__result = ThoughtState.ActiveAtStage(1);
-					__result = ThoughtState.Inactive;
-					}
-				}*/
 			}
 		}
 
@@ -2880,7 +2873,7 @@ namespace RationalRomance_Code
 				return ThoughtState.Inactive;
 			if (!LovePartnerRelationUtility.HasAnyLovePartner(p))
 				{
-				return ThoughtState.Inactive;
+				return ThoughtState.ActiveAtStage(0);
 				}
 			List<Pawn> lovers = new List<Pawn>();
 			List<DirectPawnRelation> directRelations = p.relations.DirectRelations;
@@ -2890,10 +2883,6 @@ namespace RationalRomance_Code
 					{
 					lovers.Add(rel.otherPawn);
 					}
-				}
-			if (lovers.Count == 0)
-				{
-				return ThoughtState.ActiveAtStage(0);
 				}
 			if (lovers.Count == 1 && !lovers[0].story.traits.HasTrait(RRRTraitDefOf.Polyamorous))
 				{

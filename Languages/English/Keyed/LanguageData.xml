@@ -27,6 +27,13 @@
   <RRR.GenerateSexualities>Give all pawns a sexuality by default:</RRR.GenerateSexualities>
   <RRR.GenerateSexualitiesTip>This determines whether RR will give sexualities to pawns. Other traits like Polyamorous, Faithful, and Philanderer can still be generated.</RRR.GenerateSexualitiesTip>
 
+  <RRR.PolyamorousNewPartnerChance>Polyamorous New Lover Seek Coefficient:</RRR.PolyamorousNewPartnerChance>
+  <RRR.PolyamorousNewPartnerChanceTip>This determines the rate at which polyamorous pawns will look for another lover when they are currently in a relationship. Increase to easily make more relatioships.</RRR.PolyamorousNewPartnerChanceTip>
+
+  <RRR.polyamorousLoverAttachment>Polyamorous Attachment Coefficient:</RRR.polyamorousLoverAttachment>
+  <RRR.polyamorousLoverAttachmentTip>This determines the rate at which polyamorous pawns stay and not look for another lover when they are currently in a relationship. </RRR.polyamorousLoverAttachmentTip>
+
+
 
 
 </LanguageData>
