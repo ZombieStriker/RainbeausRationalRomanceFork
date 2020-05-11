@@ -281,7 +281,7 @@
 	<Operation Class="PatchOperationReplace">
 		<xpath>Defs/ThoughtDef[defName = "GotSomeLovin"]/stackLimit</xpath>
 		<value>
-			<stackLimit>3</stackLimit>
+			<stackLimit>5</stackLimit>
 		</value>
 	</Operation>
 	<Operation Class="PatchOperationReplace">

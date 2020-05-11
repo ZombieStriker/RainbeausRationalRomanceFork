@@ -1,0 +1,10 @@
+<Patch>
+
+  <Operation Class="PatchOperationReplace">
+    <xpath>/Defs/PawnRelationDef[workerClass="PawnRelationWorker_Lover"]/workerClass</xpath>
+    <value>
+      <workerClass>RationalRomance_Code.PawnRelationWorker_Lover_NRE</workerClass>
+    </value>
+  </Operation>
+  
+</Patch>

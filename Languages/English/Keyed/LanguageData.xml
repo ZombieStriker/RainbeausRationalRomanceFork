@@ -33,6 +33,10 @@
   <RRR.polyamorousLoverAttachment>Polyamorous Attachment Coefficient:</RRR.polyamorousLoverAttachment>
   <RRR.polyamorousLoverAttachmentTip>This determines the rate at which polyamorous pawns stay and not look for another lover when they are currently in a relationship. </RRR.polyamorousLoverAttachmentTip>
 
+  <RRR.secondLovinCoefficent>"SecondaryLovinChance" Coefficient:</RRR.secondLovinCoefficent>
+  <RRR.secondLovinCoefficentTip>This determines the rate at which pawns attempt </RRR.secondLovinCoefficentTip>
+
+
 
 
 

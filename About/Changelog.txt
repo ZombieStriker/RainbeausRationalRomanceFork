@@ -1,6 +1,13 @@
 ---------------------------------------------------------------------------------
   Changelog for "Rainbeau's Rational Romance"
 ---------------------------------------------------------------------------------
+- 5/6/2020
+	- Changed disfigured mood penalty from +3 to -3
+	- Added slider for "SecondaryLovinChance" to increase frequency of lovin attempts
+
+- 4/28/2020
+	- Added NRE (New Relationship Energy) mood buff when a new relationship is created.
+
 - 4/26/2020
 	- Fix for settings staying across reloads
 	- Added sliders for chance for polyamorous pawns to look for new partners.

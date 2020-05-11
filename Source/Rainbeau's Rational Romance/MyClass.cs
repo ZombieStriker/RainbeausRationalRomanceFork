@@ -45,6 +45,8 @@ namespace RationalRomance_Code
 		public float polyamorousNewPartnerChanceCoefficient = 1f;
 		public float polyamorousLoverAttachmentCoefficient = 1f;
 
+		public float secondaryLovinChanceCoefficient = 1f;
+
 		public void DoWindowContents(Rect canvas)
 			{
 			Listing_Standard list = new Listing_Standard();
@@ -102,11 +104,14 @@ namespace RationalRomance_Code
 
 
 			list.Gap(2);
-			list.Label("RRR.PolyamorousNewPartnerChance".Translate() + "  " + Math.Round(polyamorousNewPartnerChanceCoefficient,1) + ".", -1f, "RRR.PolyamorousNewPartnerChanceTip".Translate());
+			list.Label("RRR.PolyamorousNewPartnerChance".Translate() + "  " + Math.Round(polyamorousNewPartnerChanceCoefficient, 1) + ".", -1f, "RRR.PolyamorousNewPartnerChanceTip".Translate());
 			polyamorousNewPartnerChanceCoefficient = list.Slider(polyamorousNewPartnerChanceCoefficient, -2.99f, 2.99f);
 			list.Gap(2);
-			list.Label("RRR.polyamorousLoverAttachment".Translate() + "  " + Math.Round(polyamorousLoverAttachmentCoefficient,1) + ".", -1f, "RRR.polyamorousLoverAttachmentTip".Translate());
+			list.Label("RRR.polyamorousLoverAttachment".Translate() + "  " + Math.Round(polyamorousLoverAttachmentCoefficient, 1) + ".", -1f, "RRR.polyamorousLoverAttachmentTip".Translate());
 			polyamorousLoverAttachmentCoefficient = list.Slider(polyamorousLoverAttachmentCoefficient, 0, 2.99f);
+			list.Gap(2);
+			list.Label("RRR.secondLovinCoefficent".Translate() + "  " + Math.Round(secondaryLovinChanceCoefficient, 2) + ".", -1f, "RRR.secondLovinCoefficentTip".Translate());
+			secondaryLovinChanceCoefficient = list.Slider(secondaryLovinChanceCoefficient, 0, 5.99f);
 
 
 			list.Gap(100);
@@ -125,6 +130,7 @@ namespace RationalRomance_Code
 				generateSexualities = true;
 				polyamorousLoverAttachmentCoefficient = 1;
 				polyamorousNewPartnerChanceCoefficient = 1;
+				secondaryLovinChanceCoefficient = 1;
 				}
 			list.End();
 			}
@@ -144,7 +150,8 @@ namespace RationalRomance_Code
 			Scribe_Values.Look(ref generateSexualities, "generateSexualities", true);
 			Scribe_Values.Look(ref polyamorousLoverAttachmentCoefficient, "polyamorousLoverAttachmentCoefficient", 1);
 			Scribe_Values.Look(ref polyamorousNewPartnerChanceCoefficient, "polyamorousNewPartnerChanceCoefficient", 1);
-			}
+			Scribe_Values.Look(ref secondaryLovinChanceCoefficient, "secondaryLovinChanceCoefficient", 1);
+		}
 		}
 
 	[DefOf]
@@ -211,9 +218,10 @@ namespace RationalRomance_Code
 		public static void AssignOrientation(Pawn pawn)
 			{
 			float orientation = Rand.Value;
-			if (pawn.gender == Gender.None) { 
-				return; 
-			}
+			if (pawn.gender == Gender.None)
+				{
+				return;
+				}
 
 			if (hasSexualTrait(pawn))
 				return;
@@ -921,7 +929,7 @@ namespace RationalRomance_Code
 							}
 						else
 							{
-							cheatChance = Mathf.InverseLerp(25f + (25*Controller.Settings.polyamorousLoverAttachmentCoefficient), -50f + (25*Controller.Settings.polyamorousNewPartnerChanceCoefficient) , opinionOfPartner);
+							cheatChance = Mathf.InverseLerp(25f + (25 * Controller.Settings.polyamorousLoverAttachmentCoefficient), -50f + (25 * Controller.Settings.polyamorousNewPartnerChanceCoefficient), opinionOfPartner);
 							}
 						if (initiator.story.traits.HasTrait(RRRTraitDefOf.Faithful))
 							{
@@ -1171,7 +1179,7 @@ namespace RationalRomance_Code
 		// CHANGE: Updated with new orientation options.
 		public static bool Prefix(Pawn generated, Pawn other, PawnGenerationRequest request, bool ex, ref float __result)
 			{
-				if (generated.ageTracker.AgeBiologicalYearsFloat < 14f)
+			if (generated.ageTracker.AgeBiologicalYearsFloat < 14f)
 				{
 				__result = 0f;
 				return false;
@@ -1420,22 +1428,20 @@ namespace RationalRomance_Code
 				targetBeauty = otherPawn.story.traits.DegreeOfTrait(TraitDefOf.Beauty);
 				}
 			float targetBeautyMod = 1f;
-			if (targetBeauty == -2)
-				{
-				targetBeautyMod = (initiatorBeauty >= 0 ? 0.3f : 0.8f); ;
-				}
-			if (targetBeauty == -1)
-				{
-				targetBeautyMod = (initiatorBeauty >= 0 ? 0.75f : 0.9f);
-				}
-			if (targetBeauty == 1)
-				{
-				targetBeautyMod = 1.7f;
-				}
-			else if (targetBeauty == 2)
-				{
-				targetBeautyMod = 2.3f;
-				}
+			switch(targetBeauty){
+				case -2:
+					targetBeautyMod = (initiatorBeauty >= 0 ? 0.3f : 0.8f); ;
+					break;
+				case -1:
+					targetBeautyMod = (initiatorBeauty >= 0 ? 0.75f : 0.9f);
+					break;
+				case 1:
+					targetBeautyMod = 1.7f;
+					break;
+				case 2:
+					targetBeautyMod = 2.3f;
+					break;
+			}
 			string backgroundCulture = SexualityUtilities.GetAdultCulturalAdjective(pawn);
 			float ageDiffPref = 1f;
 			if (backgroundCulture == "Urbworld" || backgroundCulture == "Medieval")
@@ -1462,7 +1468,7 @@ namespace RationalRomance_Code
 				}
 			float initiatorYoung = Mathf.InverseLerp(15f, 18f, ageBiologicalYearsFloat);
 			float targetYoung = Mathf.InverseLerp(15f, 18f, targetAge);
-			__result = targetAgeLikelihood * ageDiffPref * targetBaseCapabilities * initiatorYoung * targetYoung * targetBeautyMod * crossSpecies;
+			__result = targetAgeLikelihood * ageDiffPref * targetBaseCapabilities * initiatorYoung * targetYoung * targetBeautyMod * crossSpecies * Controller.Settings.secondaryLovinChanceCoefficient;
 			return false;
 			}
 		private static Pawn GetPawn(this Pawn_RelationsTracker _this)
@@ -1611,7 +1617,6 @@ namespace RationalRomance_Code
 					Thought_Memory mem = p.needs.mood.thoughts.memories.GetFirstMemoryOfDef(ThoughtDefOf.SleptInBedroom);
 					if (mem != null)
 						{
-						Log.Message(p.Name + " :" + mem.def.stages.Count + " || " + memB.def.stages.Count);
 						if (mem.def.stages.Count >= memB.CurStageIndex)
 							{
 							mem.SetForcedStage(memB.CurStageIndex);
@@ -1641,6 +1646,18 @@ namespace RationalRomance_Code
 			firstPawn.needs.mood.thoughts.memories.TryGainMemory(RRRThoughtDefOf.NewRelationshipEnergy, secondPawn);
 			}
 		}*/
+
+	public class PawnRelationWorker_Lover_NRE : PawnRelationWorker_Lover
+		{
+		public PawnRelationWorker_Lover_NRE() { }
+		public override void OnRelationCreated(Pawn firstPawn, Pawn secondPawn)
+			{
+			Log.Message("RR ===  NEW RELATIONSHIP FEELS");
+			secondPawn.needs.mood.thoughts.memories.TryGainMemory(RRRThoughtDefOf.NewRelationshipEnergy, firstPawn);
+			firstPawn.needs.mood.thoughts.memories.TryGainMemory(RRRThoughtDefOf.NewRelationshipEnergy, secondPawn);
+			base.OnRelationCreated(firstPawn, secondPawn);
+			}
+		}
 
 	[HarmonyPatch(typeof(ThoughtWorker_SharedBed), "CurrentStateInternal")]
 	public static class ThoughtWorker_SharedBed_CurrentStateInternal
@@ -1793,7 +1810,7 @@ namespace RationalRomance_Code
 									{
 									//I know. Bad coding practice. But this just makes sure partners don't feel cheated on if the partner is poly.
 									//The poly person may feel bad if the mono person wants to break it off with them, but the Poly person would 
-									//want to keep the relationshiup going.
+									//want to keep the relationship going.
 									}
 								else
 									{
@@ -2266,6 +2283,10 @@ namespace RationalRomance_Code
 				}
 			return result;
 			}
+
+
+
+
 		[DebuggerHidden]
 		protected override IEnumerable<Toil> MakeNewToils()
 			{
@@ -2418,10 +2439,22 @@ namespace RationalRomance_Code
 
 	public class JoyGiver_Date : JoyGiver
 		{
-		public static float percentRate = Controller.Settings.dateRate / 2;
+		public static float percentRate = Controller.Settings.dateRate / 4;
+		private Dictionary<Pawn, long> dateCooldown = new Dictionary<Pawn, long>();
 
 		public override Job TryGiveJob(Pawn pawn)
 			{
+
+
+			if (!dateCooldown.ContainsKey(pawn))
+				{
+				dateCooldown[pawn] = 0;
+				}
+			long cooldown = dateCooldown[pawn];
+			if (Find.TickManager.TicksGame - cooldown < 60 * 100 && (cooldown > 1))
+				return null;
+
+
 			Job result;
 			if (!InteractionUtility.CanInitiateInteraction(pawn))
 				{
@@ -2450,12 +2483,14 @@ namespace RationalRomance_Code
 					{
 					result = null;
 					}
-				else if (100f * Rand.Value > JoyGiver_Date.percentRate)
+				else if (100f * Rand.Value > JoyGiver_Date.percentRate && JoyGiver_Date.percentRate > 1)
 					{
 					result = null;
 					}
 				else
 					{
+					int cooldownTime = (1*Find.TickManager.TicksGame);
+					dateCooldown[pawn] = cooldownTime;
 					result = new Job(this.def.jobDef, pawn2);
 					}
 				}
