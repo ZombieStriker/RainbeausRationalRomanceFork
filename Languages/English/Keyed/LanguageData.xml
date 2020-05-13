@@ -34,9 +34,11 @@
   <RRR.polyamorousLoverAttachmentTip>This determines the rate at which polyamorous pawns stay and not look for another lover when they are currently in a relationship. </RRR.polyamorousLoverAttachmentTip>
 
   <RRR.secondLovinCoefficent>"SecondaryLovinChance" Coefficient:</RRR.secondLovinCoefficent>
-  <RRR.secondLovinCoefficentTip>This determines the rate at which pawns attempt </RRR.secondLovinCoefficentTip>
+  <RRR.secondLovinCoefficentTip>This determines the rate at which pawnms will be attracted to another pawn.</RRR.secondLovinCoefficentTip>
 
-
+  <RRR.hookupMaxRange>Max Hookup Request Distance:</RRR.hookupMaxRange>
+  <RRR.hookupMaxRangeTip>This determines the max distance pawns will still attempt to hookup with a pawn. No mo going across the map just to get rejected (Feels bad man).</RRR.hookupMaxRangeTip>
+  
 
 
 

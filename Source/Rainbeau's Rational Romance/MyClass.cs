@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using UnityEngine;
+using UnityEngine.Rendering;
 using Verse;
 using Verse.AI;
 
@@ -46,6 +47,8 @@ namespace RationalRomance_Code
 		public float polyamorousLoverAttachmentCoefficient = 1f;
 
 		public float secondaryLovinChanceCoefficient = 1f;
+
+		public float hookupMaxRange = 100;
 
 		public void DoWindowContents(Rect canvas)
 			{
@@ -112,6 +115,9 @@ namespace RationalRomance_Code
 			list.Gap(2);
 			list.Label("RRR.secondLovinCoefficent".Translate() + "  " + Math.Round(secondaryLovinChanceCoefficient, 2) + ".", -1f, "RRR.secondLovinCoefficentTip".Translate());
 			secondaryLovinChanceCoefficient = list.Slider(secondaryLovinChanceCoefficient, 0, 5.99f);
+			list.Gap(2);
+			list.Label("RRR.hookupMaxRange".Translate() + "  " + (int)hookupMaxRange + ".", -1f, "RRR.hookupMaxRangeTip".Translate());
+			hookupMaxRange = list.Slider(hookupMaxRange, 0,300.99f);
 
 
 			list.Gap(100);
@@ -131,6 +137,7 @@ namespace RationalRomance_Code
 				polyamorousLoverAttachmentCoefficient = 1;
 				polyamorousNewPartnerChanceCoefficient = 1;
 				secondaryLovinChanceCoefficient = 1;
+				hookupMaxRange = 100;
 				}
 			list.End();
 			}
@@ -151,6 +158,7 @@ namespace RationalRomance_Code
 			Scribe_Values.Look(ref polyamorousLoverAttachmentCoefficient, "polyamorousLoverAttachmentCoefficient", 1);
 			Scribe_Values.Look(ref polyamorousNewPartnerChanceCoefficient, "polyamorousNewPartnerChanceCoefficient", 1);
 			Scribe_Values.Look(ref secondaryLovinChanceCoefficient, "secondaryLovinChanceCoefficient", 1);
+			Scribe_Values.Look(ref hookupMaxRange, "hookupMaxRange", 100);
 		}
 		}
 
@@ -390,8 +398,8 @@ namespace RationalRomance_Code
 			if (ModsConfig.ActiveModsInLoadOrder.Any(mod => mod.Name.Contains("More Trait Slots")))
 				{
 				return l;
-				}
-			for (int i = 0; i < l.Count; ++i)
+			}
+				for (int i = 0; i < l.Count; ++i)
 				{
 				if (l[i].opcode == OpCodes.Ldstr && l[i].operand.Equals("Traits"))
 					{
@@ -452,6 +460,15 @@ namespace RationalRomance_Code
 			return l;
 			}
 		}
+
+
+
+
+
+
+
+
+
 
 	[HarmonyPatch(typeof(ChildRelationUtility), "ChanceOfBecomingChildOf", null)]
 	public static class ChildRelationUtility_ChanceOfBecomingChildOf
@@ -1298,6 +1315,27 @@ namespace RationalRomance_Code
 	public static class PawnGenerator_GenerateTraits
 		{
 
+		/*[HarmonyPriority(Priority.VeryHigh)]
+		static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+		{
+			List<CodeInstruction> l = new List<CodeInstruction>(instructions);
+			//MethodInfo RangeInclusive = AccessTools.Method(typeof(Rand), "RangeInclusive");
+			//MethodInfo mi = AccessTools.Method(typeof(PawnGenerator_GenerateTraits), "GetRandomTraitCount");
+
+			for (int i = 0; i < l.Count; ++i)
+			{
+			//	Log.Message(l[i].ToString() + " == " + l[i].operand);
+			}
+			for (int i = 0; i < l.Count; ++i)
+			{
+				//if (l[i].opcode == OpCodes.Call && l[i].operand == RangeInclusive)
+				//	{
+				//l[i].operand = mi;
+				break;
+				//	}
+			}
+			return l;
+		}*/
 
 		// CHANGE: Add orientation trait after other traits are selected.
 		public static void Postfix(Pawn pawn)
@@ -1315,20 +1353,34 @@ namespace RationalRomance_Code
 					break;
 				if (tempTrait.Label.Equals("Straight"))
 					break;
+				tempTrait = null;
 				}
 			if (tempTrait != null)
-				{
+			{
 				//TODO: If another trait was rerolled, find way to add another random trait.
 				pawn.story.traits.allTraits.Remove(tempTrait);
 				if (pawn.skills != null)
-					{
+				{
 					pawn.skills.Notify_SkillDisablesChanged();
-					}
-				if (!pawn.Dead && pawn.RaceProps.Humanlike)
-					{
-					pawn.needs.mood.thoughts.situational.Notify_SituationalThoughtsDirty();
-					}
 				}
+				if (!pawn.Dead && pawn.RaceProps.Humanlike)
+				{
+					pawn.needs.mood.thoughts.situational.Notify_SituationalThoughtsDirty();
+				}
+				//TODO: Get better system for generating "Random" traits
+				if (!pawn.story.traits.HasTrait(TraitDefOf.Nudist))
+				{
+					pawn.story.traits.GainTrait(new Trait(TraitDefOf.Nudist, 0, false));
+				}
+				else if (!pawn.story.traits.HasTrait(TraitDefOf.Psychopath) )
+				{
+					pawn.story.traits.GainTrait(new Trait(TraitDefOf.Psychopath, 0, false));
+				}
+				else
+				{
+					pawn.story.traits.GainTrait(new Trait(TraitDefOf.Kind, 0, false));
+				}
+			}
 
 
 
@@ -2390,49 +2442,55 @@ namespace RationalRomance_Code
 				}
 
 			if (!InteractionUtility.CanInitiateInteraction(pawn))
-				{
+			{
 				result = null;
-				}
+			}
 			else if (!SexualityUtilities.WillPawnTryHookup(pawn))
-				{
+			{
 				result = null;
-				}
+			}
 			else if (PawnUtility.WillSoonHaveBasicNeed(pawn))
-				{
+			{
 				result = null;
-				}
+			}
 			else
-				{
+			{
 
 				foreach (QueuedJob job in pawn.jobs.jobQueue.ToList())
-					{
+				{
 					if (job.job.def == RRRJobDefOf.DoLovinCasual /* this.def.jobDef.GetType()*/)
 						return null;
-					}
+				}
 
 				Pawn pawn2 = SexualityUtilities.FindAttractivePawn(pawn);
 				if (pawn2 == null)
-					{
+				{
 					result = null;
-					}
+				}
 				else
+				{
+					if (100f * Rand.Value > JoyGiver_CasualHookup.percentRate)
 					{
+						return null;
+					}
+
 					Building_Bed building_Bed = SexualityUtilities.FindHookupBed(pawn, pawn2);
 					if (building_Bed == null)
-						{
-						result = null;
-						}
-					else if (100f * Rand.Value > JoyGiver_CasualHookup.percentRate)
-						{
-						result = null;
-						}
-					else
-						{
-						result = new Job(this.def.jobDef, pawn, building_Bed);
-						pawn.jobs.jobQueue.EnqueueFirst(new Job(this.def.jobDef, pawn2, building_Bed), null);
-						}
+					{
+						return  null;
 					}
+
+					double distanceSqquared = pawn2.Position.DistanceToSquared(pawn.Position);
+					if (distanceSqquared > Controller.Settings.hookupMaxRange * Controller.Settings.hookupMaxRange)
+					{
+						return null;
+					}
+
+					result = new Job(this.def.jobDef, pawn, building_Bed);
+					pawn.jobs.jobQueue.EnqueueFirst(new Job(this.def.jobDef, pawn2, building_Bed), null);
+
 				}
+			}
 			return result;
 			}
 		}
