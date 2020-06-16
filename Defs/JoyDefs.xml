@@ -4,7 +4,7 @@
 	<JoyGiverDef>
 		<defName>TryHookup</defName>
 		<giverClass>RationalRomance_Code.JoyGiver_CasualHookup</giverClass>
-		<baseChance>5.0</baseChance>
+		<baseChance>20.0</baseChance>
 		<jobDef>LeadHookup</jobDef>
 		<joyKind>Lewd</joyKind>
 	</JoyGiverDef>

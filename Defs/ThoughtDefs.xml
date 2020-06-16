@@ -82,7 +82,7 @@
       <li>
         <label>not in a relationship</label>
         <description>I feel so lonely.</description>
-        <baseMoodEffect>-3</baseMoodEffect>
+        <baseMoodEffect>-1</baseMoodEffect>
       </li>
 			<li>
 				<label>in a monogamous relationship</label>
@@ -109,6 +109,27 @@
         <label>sleeping with polycule</label>
         <description>I am with the people I love the most!</description>
         <baseMoodEffect>5</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <ThoughtDef>
+    <defName>NeedHumanContact</defName>
+    <workerClass>RationalRomance_Code.ThoughtWorker_NeedHumanContact</workerClass>
+    <stages>
+      <li>
+        <label>touch deprived</label>
+        <description>Its been too long since I touched another human being.</description>
+        <baseMoodEffect>-4</baseMoodEffect>
+      </li>
+      <li>
+        <label>single &amp; lonely</label>
+        <description>I miss being with another person.</description>
+        <baseMoodEffect>-3</baseMoodEffect>
+      </li>
+      <li>
+        <label>missing partner</label>
+        <description>I miss being with the person I love.</description>
+        <baseMoodEffect>-3</baseMoodEffect>
       </li>
     </stages>
   </ThoughtDef>

@@ -1,6 +1,10 @@
 ---------------------------------------------------------------------------------
-  Changelog for "Rainbeau's Rational Romance"
+  Changelog for "Rainbeau's Rational Romance 2"
 ---------------------------------------------------------------------------------
+- 6/16/2020
+	- Added "Human Contact" need. Pawns need to either sleep with a lover or have a hookup to refull this need.
+	- Note: Because of human contact requirement, it is even more important to schedule recreation time.
+
 - 5/11/2020
 	- Fixed traits getting replaced by sexuality traits.
 	- Added a max range slider for hookup attempt distances

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<Defs>
+	<NeedDef>
+		<defName>Human_Contact</defName>
+		<needClass>RationalRomance_Code.Human_Contact_Need</needClass>
+		<label>Human Contact</label>
+		<description>Represents the need for physical contact with lovers or other people.</description>
+		<baseLevel>1.00</baseLevel>
+		<fallPerDay>0.00</fallPerDay>
+		<showOnNeedList>true</showOnNeedList>
+		<listPriority>50</listPriority>
+		<major>false</major>
+		<freezeWhileSleeping>false</freezeWhileSleeping>
+		<minIntelligence>Humanlike</minIntelligence>
+		<colonistsOnly>false</colonistsOnly>
+		<showForCaravanMembers>true</showForCaravanMembers>
+	</NeedDef>
+</Defs>
