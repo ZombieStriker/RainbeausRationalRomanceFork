@@ -23,10 +23,13 @@
 
   <RRR.PolyamorousDebuff>Enable Polyamorous in Monogamous Relationship Debuff:</RRR.PolyamorousDebuff>
   <RRR.PolyamorousDebuffTip>This determines whether the polyamorous pawn will get a mood debuff if they are in a monogamous relationship.</RRR.PolyamorousDebuffTip>
-  
+
+  <RRR.NeedContact>Enable Experimental "Need Contact" need</RRR.NeedContact>
+  <RRR.NeedContactTip>[EXPERIMENTAL] Creates a new need requiring human contact.</RRR.NeedContactTip>
+
   <RRR.GenerateSexualities>Give all pawns a sexuality by default:</RRR.GenerateSexualities>
   <RRR.GenerateSexualitiesTip>This determines whether RR will give sexualities to pawns. Other traits like Polyamorous, Faithful, and Philanderer can still be generated.</RRR.GenerateSexualitiesTip>
-
+  
   <RRR.PolyamorousNewPartnerChance>Polyamorous New Lover Seek Coefficient:</RRR.PolyamorousNewPartnerChance>
   <RRR.PolyamorousNewPartnerChanceTip>This determines the rate at which polyamorous pawns will look for another lover when they are currently in a relationship. Increase to easily make more relatioships.</RRR.PolyamorousNewPartnerChanceTip>
 

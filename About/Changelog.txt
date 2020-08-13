@@ -1,6 +1,11 @@
 ---------------------------------------------------------------------------------
   Changelog for "Rainbeau's Rational Romance 2"
 ---------------------------------------------------------------------------------
+- 8/12/2020
+	- Updated to 1.2
+	- Made "Human Contact" need experimental and disabled by default.
+	- Added option to enable human contact
+
 - 6/16/2020
 	- Added "Human Contact" need. Pawns need to either sleep with a lover or have a hookup to refull this need.
 	- Note: Because of human contact requirement, it is even more important to schedule recreation time.

@@ -42,6 +42,7 @@ namespace RationalRomance_Code
 
 		public bool polyamorousDebuff = true;
 		public bool generateSexualities = true;
+		public bool need_contact = false;
 
 		public float polyamorousNewPartnerChanceCoefficient = 1f;
 		public float polyamorousLoverAttachmentCoefficient = 1f;
@@ -104,6 +105,9 @@ namespace RationalRomance_Code
 			list.CheckboxLabeled("RRR.PolyamorousDebuff".Translate(), ref polyamorousDebuff, "RRR.PolyamorousDebuffTip".Translate());
 			list.Gap(2);
 			list.CheckboxLabeled("RRR.GenerateSexualities".Translate(), ref generateSexualities, "RRR.GenerateSexualitiesTip".Translate());
+			list.Gap(2);
+			list.CheckboxLabeled("RRR.NeedContact".Translate(), ref need_contact, "RRR.NeedContact".Translate());
+
 
 
 			list.Gap(2);
@@ -134,6 +138,7 @@ namespace RationalRomance_Code
 				BigotCorrectionRate = 50f;
 				polyamorousDebuff = true;
 				generateSexualities = true;
+				need_contact = false;
 				polyamorousLoverAttachmentCoefficient = 1;
 				polyamorousNewPartnerChanceCoefficient = 1;
 				secondaryLovinChanceCoefficient = 1;
@@ -155,6 +160,7 @@ namespace RationalRomance_Code
 			Scribe_Values.Look(ref BigotCorrectionRate, "BigotCorrectionRate", 50.0f);
 			Scribe_Values.Look(ref polyamorousDebuff, "polyamorousDebuff", true);
 			Scribe_Values.Look(ref generateSexualities, "generateSexualities", true);
+			Scribe_Values.Look(ref need_contact, "needcontact", true);
 			Scribe_Values.Look(ref polyamorousLoverAttachmentCoefficient, "polyamorousLoverAttachmentCoefficient", 1);
 			Scribe_Values.Look(ref polyamorousNewPartnerChanceCoefficient, "polyamorousNewPartnerChanceCoefficient", 1);
 			Scribe_Values.Look(ref secondaryLovinChanceCoefficient, "secondaryLovinChanceCoefficient", 1);
@@ -2468,9 +2474,27 @@ namespace RationalRomance_Code
 				{
 					if (100f * Rand.Value > JoyGiver_CasualHookup.percentRate)
 					{
-						return null;
-					}
+						if (Controller.Settings.need_contact)
+						{
+							var touch_need = pawn.needs.TryGetNeed<Human_Contact_Need>();
+							if (touch_need != null)
+							{
+								var lev = touch_need.CurLevel;
+								if (lev <= touch_need.touch_deprived_threshold)
+								{
+									if (100f * Rand.Value < lev)
+									{
+										return null;
+									}
+								}
+							}
 
+						}
+						else
+						{
+							return null;
+						}
+					}
 					Building_Bed building_Bed = SexualityUtilities.FindHookupBed(pawn, pawn2);
 					if (building_Bed == null)
 					{
@@ -2762,7 +2786,8 @@ namespace RationalRomance_Code
 				Human_Contact_Need human_Contact_Need = pSubject.needs.TryGetNeed<Human_Contact_Need>();
 				float num = 0f;
 				num += (pSubject.relations.SecondaryRomanceChanceFactor(pObject));
-				if (human_Contact_Need != null) { 
+				if (human_Contact_Need != null)
+				{
 					num /= Math.Min(0.1f, human_Contact_Need.CurLevel);
 				}
 				else
@@ -3043,7 +3068,7 @@ namespace RationalRomance_Code
 
 		public float getInRelationshipModifier(IEnumerable<Pawn> partners)
 		{
-			if(partners.Count() > 1)
+			if (partners.Count() > 1)
 			{
 				return 3f;
 			}
@@ -3052,7 +3077,7 @@ namespace RationalRomance_Code
 
 		public Human_Contact_Need(Pawn pawn) : base(pawn)
 		{
-			
+
 			threshPercents = new List<float>
 			{
 				touch_deprived_threshold,
@@ -3062,7 +3087,7 @@ namespace RationalRomance_Code
 		}
 		public override void NeedInterval() //150 ticks between each calls
 		{
-			if (AndroidsCompatibility.IsAndroid(pawn))
+			if (AndroidsCompatibility.IsAndroid(pawn) || !Controller.Settings.need_contact)
 			{
 				this.pawn.needs.AllNeeds.Remove(this);
 				CurLevel = 1;
@@ -3073,14 +3098,14 @@ namespace RationalRomance_Code
 
 			IEnumerable<Pawn> partners = (from r in pawn.relations.PotentiallyRelatedPawns where LovePartnerRelationUtility.LovePartnerRelationExists(pawn, r) select r);
 
-			float fallPerInterval = 150*(fallRate / 5000000f) *getInRelationshipModifier(partners);
+			float fallPerInterval = 150 * (fallRate / 5000000f) * getInRelationshipModifier(partners);
 
 			if (partners.Count() > 1)
 			{
 				if (pawn.InBed())
 				{
 					IEnumerable<Pawn> partnersInBed = (from r in partners where pawn.CurrentBed().OwnersForReading.Contains(r) select r);
-					if(partnersInBed.Count() > 1)
+					if (partnersInBed.Count() > 1)
 					{
 						CurLevel += 10 * fallPerInterval;
 					}
@@ -3097,10 +3122,15 @@ namespace RationalRomance_Code
 	{
 		protected override ThoughtState CurrentStateInternal(Pawn p)
 		{
+			if (!Controller.Settings.need_contact)
+			{
+				return ThoughtState.Inactive;
+			}
 			if (p.story.traits.HasTrait(TraitDefOf.Asexual))
 			{
 				return ThoughtState.Inactive;
 			}
+
 			var touch_need = p.needs.TryGetNeed<Human_Contact_Need>();
 			if (touch_need != null)
 			{
@@ -3111,7 +3141,7 @@ namespace RationalRomance_Code
 				else if (lev <= touch_need.lonely_threshold)
 				{
 					IEnumerable<Pawn> partners = (from r in p.relations.PotentiallyRelatedPawns where LovePartnerRelationUtility.LovePartnerRelationExists(p, r) select r);
-					if(partners.Count() == 0)
+					if (partners.Count() == 0)
 					{
 						//singel and lonely
 						return ThoughtState.ActiveAtStage(1);
@@ -3129,6 +3159,7 @@ namespace RationalRomance_Code
 				return ThoughtState.Inactive;
 		}
 	}
+
 
 
 }

@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ModMetaData>
-	<name>2 Rational 2 Romance [1.1][Unofficial Fork of Rational Romance]</name>
+	<name>Rational Romance 2</name>
 	<author>Rainbeau Flambe / Zombie_Striker</author>
 	<url>https://ludeon.com/forums/index.php?topic=51104.0</url>
   <supportedVersions>
-    <li>1.1</li>
+    <li>1.2</li>
   </supportedVersions>
   <packageId>zombiestriker.rational.romance2</packageId>
   <modDependenciesByVersion>
-    <v1.1>
+    <v1.2>
       <li>
         <packageId>brrainz.harmony</packageId>
         <displayName>Harmony</displayName>
         <steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
         <downloadUrl>https://github.com/pardeike/HarmonyRimWorld/releases/latest</downloadUrl>
       </li>
-    </v1.1>
+    </v1.2>
   </modDependenciesByVersion>
   <description>
     Since Rainbeau Flambe has stopped developing mods for Rimworld, I have decided to update and maintain this project. Besides updating this mod to 1.1, I have added a few features and performance fixes to the project. This includes a change to how many times a pawn can try to hook up with the same pawn, and how likely people can be romanced to genders they are not attracted to.  I have also added a slider for Misogynists and Misandrists for how likely they are to be attracted to the gender they hate,  changed the likelihood that these bigots will successfully romance the other person, and a fwe other changes that I thought were lacking in the original.
